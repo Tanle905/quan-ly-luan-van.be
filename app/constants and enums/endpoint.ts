@@ -5,14 +5,6 @@ export const AUTH_ROUTE = {
 };
 export const USER_PROFILE_ROUTE = {
   BASE: "/",
-  ADDRESS: {
-    BASE: "/address",
-    ID: "/:id",
-  },
-  ORDER: {
-    BASE: "/order",
-    ID: "/:id",
-  },
   ID: "/:id",
 };
 export const USER_MANAGEMENT_ROUTE = {
