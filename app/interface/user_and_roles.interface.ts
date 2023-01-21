@@ -21,8 +21,8 @@ export interface User {
   password: string;
   imageUrl?: string;
   phoneNumber?: number;
-  payment?: string;
   isDeactivated?: boolean;
+  name?: string;
 }
 
 export interface UserModelInterface extends Model<User> {

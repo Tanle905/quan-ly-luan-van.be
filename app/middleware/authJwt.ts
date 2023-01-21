@@ -46,4 +46,54 @@ export const authJwt = {
       return res.status(500).json({ message: error });
     }
   },
+  isStudent: (req: UserRequest, res: Response, next: NextFunction) => {
+    const { userId } = res.locals;
+
+    try {
+      UserModel.findById(userId).exec((error: any, user: any) => {
+        RoleModel.find(
+          {
+            _id: { $in: user.roles },
+          },
+          (error: any, roles: any) => {
+            for (let i = 0; i < roles.length; i++) {
+              if (roles[i].name === ROLES.STUDENT) {
+                next();
+                return;
+              }
+            }
+
+            return res.status(403).json({ message: "Require Student Role!" });
+          }
+        );
+      });
+    } catch (error) {
+      return res.status(500).json({ message: error });
+    }
+  },
+  isTeacher: (req: UserRequest, res: Response, next: NextFunction) => {
+    const { userId } = res.locals;
+
+    try {
+      UserModel.findById(userId).exec((error: any, user: any) => {
+        RoleModel.find(
+          {
+            _id: { $in: user.roles },
+          },
+          (error: any, roles: any) => {
+            for (let i = 0; i < roles.length; i++) {
+              if (roles[i].name === ROLES.TEACHER) {
+                next();
+                return;
+              }
+            }
+
+            return res.status(403).json({ message: "Require Teacher Role!" });
+          }
+        );
+      });
+    } catch (error) {
+      return res.status(500).json({ message: error });
+    }
+  },
 };

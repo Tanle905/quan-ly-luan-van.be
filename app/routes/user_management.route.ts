@@ -8,10 +8,10 @@ export const userManagementRouter = Router();
 
 userManagementRouter
   .route(USER_MANAGEMENT_ROUTE.BASE)
-  .all(authJwt.verifyToken, authJwt.isAdmin, verifyStatus.isNotDeactivated)
+  .all(authJwt.verifyToken, authJwt.checkRole, verifyStatus.isNotDeactivated)
   .get(userManagementController.get);
 
 userManagementRouter
   .route(USER_MANAGEMENT_ROUTE.ID)
-  .all(authJwt.verifyToken, authJwt.isAdmin, verifyStatus.isNotDeactivated)
+  .all(authJwt.verifyToken, authJwt.checkRole, verifyStatus.isNotDeactivated)
   .put(userManagementController.handleDeactivateUser);

@@ -10,14 +10,16 @@ export const userDataSchema: Schema = new mongoose.Schema<User>(
       type: String,
       required: true,
     },
+    password: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       required: true,
     },
-    roles: [{ type: mongoose.Schema.Types.ObjectId, ref: "Role" }],
-    password: {
+    name: {
       type: String,
-      required: true,
     },
     imageUrl: {
       type: String,
@@ -25,26 +27,13 @@ export const userDataSchema: Schema = new mongoose.Schema<User>(
     phoneNumber: {
       type: Number,
     },
-    payment: {
-      type: String,
-    },
+    roles: [{ type: mongoose.Schema.Types.ObjectId, ref: "Role" }],
     isDeactivated: {
       type: Boolean,
     },
   },
   {
     timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },
-    statics: {
-      extractUserData(payload: any) {
-        Object.keys(payload).forEach(
-          (key: string) =>
-            payload[key] === undefined ||
-            (payload[key] === null && delete payload[key])
-        );
-
-        return payload;
-      },
-    },
   }
 );
 
