@@ -14,12 +14,15 @@ export const teacherDataSchema: Schema = new mongoose.Schema<Teacher>(
     },
     receivedRequestList: {
       type: [Object],
+      default: [],
     },
     studentList: {
       type: [studentDataSchema],
+      default: [],
     },
     reportSchedule: {
       type: [Object],
+      default: [],
     },
   },
   {
@@ -34,7 +37,6 @@ teacherDataSchema.virtual("profile", {
   localField: "MSCB",
   foreignField: "MSCB",
   justOne: true,
-  
 });
 
 export const TeacherModel = mongoose.model<Teacher>(

@@ -7,8 +7,9 @@ export const studentDataSchema: Schema = new mongoose.Schema<Student>(
       type: String,
       required: true,
     },
-    isRequestSent: {
-      type: Boolean,
+    sentRequestList: {
+      type: [Object],
+      default: []
     },
     topic: {
       type: Object,
@@ -27,6 +28,13 @@ export const studentDataSchema: Schema = new mongoose.Schema<Student>(
     timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },
   }
 );
+
+studentDataSchema.virtual("profile", {
+  ref: "User",
+  localField: "MSSV",
+  foreignField: "MSSV",
+  justOne: true,
+});
 
 export const StudentModel = mongoose.model<Student>(
   "Student",
