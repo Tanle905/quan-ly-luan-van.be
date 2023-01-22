@@ -1,6 +1,6 @@
 import { User } from "./user_and_roles.interface";
 
-export interface Student extends User {
+export interface Student {
   MSSV: string;
   isRequestSent?: boolean;
   topic?: any;

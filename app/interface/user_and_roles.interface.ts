@@ -19,10 +19,14 @@ export interface User {
   email: string;
   roles?: string[];
   password: string;
+  MSSV?: string;
+  MSCB?: string;
+  teacherProfile?: any;
+  studentProfile?: any;
   imageUrl?: string;
   phoneNumber?: number;
-  isDeactivated?: boolean;
   name?: string;
+  isDeactivated?: boolean;
 }
 
 export interface UserModelInterface extends Model<User> {

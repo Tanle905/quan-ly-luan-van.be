@@ -1,10 +1,8 @@
 import mongoose, { Schema } from "mongoose";
 import { Student } from "../interface/student.interface";
-import { userDataSchema } from "./user.model";
 
 export const studentDataSchema: Schema = new mongoose.Schema<Student>(
   {
-    ...userDataSchema.obj,
     MSSV: {
       type: String,
       required: true,

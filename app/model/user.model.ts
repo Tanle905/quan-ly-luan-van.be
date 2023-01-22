@@ -31,11 +31,33 @@ export const userDataSchema: Schema = new mongoose.Schema<User>(
     isDeactivated: {
       type: Boolean,
     },
+    MSCB: {
+      type: String,
+    },
+    MSSV: {
+      type: String,
+    },
   },
   {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
     timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },
   }
 );
+
+userDataSchema.virtual("studentProfile", {
+  ref: "Student",
+  localField: "MSSV",
+  foreignField: "MSSV",
+  justOne: true,
+});
+
+userDataSchema.virtual("teacherProfile", {
+  ref: "Teacher",
+  localField: "MSCB",
+  foreignField: "MSCB",
+  justOne: true,
+});
 
 export const UserModel = mongoose.model<User, UserModelInterface>(
   "User",
