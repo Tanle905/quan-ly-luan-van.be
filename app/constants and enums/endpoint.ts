@@ -11,6 +11,9 @@ export const USER_MANAGEMENT_ROUTE = {
   BASE: "/",
   ID: "/:userId",
 };
+export const STUDENT_ROUTE = {
+  BASE: "/",
+};
 export const TEACHER_ROUTE = {
   BASE: "/",
 };

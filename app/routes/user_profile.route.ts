@@ -8,6 +8,6 @@ export const profileRouter = Router();
 
 profileRouter
   .route(USER_PROFILE_ROUTE.BASE)
-  .all(authJwt.verifyToken, verifyStatus.isNotDeactivated)
+  .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
   .get(userProfileController.get)
   .put(userProfileController.put);

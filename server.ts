@@ -5,6 +5,7 @@ import { config } from "./app/config";
 import mongoose from "mongoose";
 import {
   AUTH_ENDPOINT,
+  NOTIFICATION_ENDPOINT,
   REQUEST_ENDPOINT,
   TEACHER_ENDPOINT,
   USER_MANAGEMENT_ENDPOINT,
@@ -15,6 +16,7 @@ import { userManagementRouter } from "./app/routes/user_management.route";
 import { profileRouter } from "./app/routes/user_profile.route";
 import { teacherRouter } from "./app/routes/teacher.route";
 import { requestRouter } from "./app/routes/request.route";
+import { notificationRouter } from "./app/routes/notification.route";
 
 //Config
 const app: Application = express();
@@ -35,5 +37,6 @@ app.use(USER_PROFILE_ENDPOINT, profileRouter);
 app.use(USER_MANAGEMENT_ENDPOINT, userManagementRouter);
 app.use(TEACHER_ENDPOINT, teacherRouter);
 app.use(REQUEST_ENDPOINT, requestRouter);
+app.use(NOTIFICATION_ENDPOINT, notificationRouter);
 
 app.listen(port, () => {});
