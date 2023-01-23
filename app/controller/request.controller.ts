@@ -20,12 +20,16 @@ export const requestController = {
 
       studentDocument.sentRequestList.push({
         MSCB,
-        name: (teacherDocument as any).profile.name,
+        name: `${(teacherDocument as any).profile.lastName} ${
+          (teacherDocument as any).profile.firstName
+        }`,
         email: (teacherDocument as any).profile.email,
       });
       teacherDocument.receivedRequestList.push({
         MSSV,
-        name: (studentDocument as any).profile.name,
+        name: `${(studentDocument as any).profile.lastName} ${
+          (studentDocument as any).profile.firstName
+        }`,
         email: (studentDocument as any).profile.email,
       });
 

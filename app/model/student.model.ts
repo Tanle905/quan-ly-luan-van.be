@@ -7,9 +7,21 @@ export const studentDataSchema: Schema = new mongoose.Schema<Student>(
       type: String,
       required: true,
     },
+    class: {
+      type: String,
+      required: true,
+    },
+    department: {
+      type: String,
+      required: true,
+    },
+    major: {
+      type: String,
+      required: true,
+    },
     sentRequestList: {
       type: [Object],
-      default: []
+      default: [],
     },
     topic: {
       type: Object,
@@ -25,6 +37,8 @@ export const studentDataSchema: Schema = new mongoose.Schema<Student>(
     },
   },
   {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
     timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },
   }
 );

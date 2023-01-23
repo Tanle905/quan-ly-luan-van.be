@@ -18,7 +18,10 @@ export const userDataSchema: Schema = new mongoose.Schema<User>(
       type: String,
       required: true,
     },
-    name: {
+    firstName: {
+      type: String,
+    },
+    lastName: {
       type: String,
     },
     imageUrl: {
@@ -35,6 +38,15 @@ export const userDataSchema: Schema = new mongoose.Schema<User>(
       type: String,
     },
     MSSV: {
+      type: String,
+    },
+    ethnic: {
+      type: String,
+    },
+    religion: {
+      type: String,
+    },
+    CCCD: {
       type: String,
     },
   },

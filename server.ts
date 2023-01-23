@@ -7,6 +7,7 @@ import {
   AUTH_ENDPOINT,
   NOTIFICATION_ENDPOINT,
   REQUEST_ENDPOINT,
+  STUDENT_ENDPOINT,
   TEACHER_ENDPOINT,
   USER_MANAGEMENT_ENDPOINT,
   USER_PROFILE_ENDPOINT,
@@ -17,6 +18,7 @@ import { profileRouter } from "./app/routes/user_profile.route";
 import { teacherRouter } from "./app/routes/teacher.route";
 import { requestRouter } from "./app/routes/request.route";
 import { notificationRouter } from "./app/routes/notification.route";
+import { studentRouter } from "./app/routes/student.route";
 
 //Config
 const app: Application = express();
@@ -38,5 +40,6 @@ app.use(USER_MANAGEMENT_ENDPOINT, userManagementRouter);
 app.use(TEACHER_ENDPOINT, teacherRouter);
 app.use(REQUEST_ENDPOINT, requestRouter);
 app.use(NOTIFICATION_ENDPOINT, notificationRouter);
+app.use(STUDENT_ENDPOINT, studentRouter);
 
 app.listen(port, () => {});

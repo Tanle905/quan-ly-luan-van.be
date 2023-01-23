@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { TeacherModel } from "../model/teacher.model";
+import { StudentModel } from "../model/student.model";
 
-export const teacherController = {
+export const studentController = {
   get: async (req: Request, res: Response) => {
     try {
-      const teacherDocuments = await TeacherModel.find({}).populate({
+      const teacherDocuments = await StudentModel.find({}).populate({
         path: "profile",
         select: "-password",
       });
