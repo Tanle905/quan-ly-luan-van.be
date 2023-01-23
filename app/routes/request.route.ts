@@ -8,6 +8,15 @@ export const requestRouter = Router();
 
 requestRouter
   .route(REQUEST_ROUTE.BASE)
-  .all([authJwt.verifyToken, authJwt.isStudent, verifyStatus.isNotDeactivated])
-  .post(requestController.sendRequest)
-  .put(requestController.deleteRequest);
+  .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
+  .post(requestController.sendRequest);
+
+requestRouter
+  .route(REQUEST_ROUTE.ACCEPT)
+  .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
+  .post(requestController.acceptRequest);
+
+requestRouter
+  .route(REQUEST_ROUTE.REJECT)
+  .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
+  .post(requestController.rejectRequest);

@@ -8,11 +8,10 @@ export const notificationController = {
     try {
       const notificationDocuments = await NotificationModel.find({
         receiver: userId,
-      });
+      }).sort({ createdAt: -1 });
 
       return res.status(200).json(notificationDocuments);
     } catch (error) {
-
       return res.status(500).json(error);
     }
   },

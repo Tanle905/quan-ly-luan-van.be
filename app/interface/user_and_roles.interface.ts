@@ -1,5 +1,7 @@
 import { Request } from "express";
 import { Model } from "mongoose";
+import { Student } from "./student.interface";
+import { Teacher } from "./teacher.interface";
 
 export interface Role {
   role: string;
@@ -18,11 +20,11 @@ export interface User {
   username: string;
   email: string;
   password: string;
-  roles?: string[];
+  roles?: Role[];
   MSSV?: string;
   MSCB?: string;
-  teacherProfile?: any;   //virtual field
-  studentProfile?: any;   //virtual field
+  teacherProfile?: Teacher;   //virtual field
+  studentProfile?: Student;   //virtual field
   firstName?: string;
   lastName?: string;
   imageUrl?: string;
@@ -31,6 +33,8 @@ export interface User {
   ethnic?: string;
   religion?: string;
   CCCD?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface UserModelInterface extends Model<User> {

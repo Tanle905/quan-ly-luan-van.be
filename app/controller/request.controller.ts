@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { User } from "../interface/user_and_roles.interface";
+import { RequestModel } from "../model/request.model";
 import { StudentModel } from "../model/student.model";
 import { TeacherModel } from "../model/teacher.model";
 
@@ -13,28 +13,32 @@ export const requestController = {
     try {
       const studentDocument = await StudentModel.findOne({
         MSSV,
-      }).populate({ path: "profile", select: "-_id -password" });
+      }).populate({ path: "profile", select: " -password" });
       const teacherDocument = await TeacherModel.findOne({
         MSCB,
-      }).populate({ path: "profile", select: "-_id -password" });
+      }).populate({ path: "profile", select: " -password" });
 
-      studentDocument.sentRequestList.push({
+      const newRequest = new RequestModel({
+        MSSV,
         MSCB,
-        name: `${(teacherDocument as any).profile.lastName} ${
+        studentId: (studentDocument as any).profile._id,
+        teacherId: (teacherDocument as any).profile._id,
+        teacherName: `${(teacherDocument as any).profile.lastName} ${
           (teacherDocument as any).profile.firstName
         }`,
-        email: (teacherDocument as any).profile.email,
-      });
-      teacherDocument.receivedRequestList.push({
-        MSSV,
-        name: `${(studentDocument as any).profile.lastName} ${
+        teacherEmail: (teacherDocument as any).profile.email,
+        studentName: `${(studentDocument as any).profile.lastName} ${
           (studentDocument as any).profile.firstName
         }`,
-        email: (studentDocument as any).profile.email,
+        studentEmail: (studentDocument as any).profile.email,
       });
+
+      studentDocument.sentRequestList.push(newRequest);
+      teacherDocument.receivedRequestList.push(newRequest);
 
       studentDocument.save();
       teacherDocument.save();
+      newRequest.save();
 
       delete (studentDocument as any).profile;
       delete (teacherDocument as any).profile;
@@ -48,32 +52,78 @@ export const requestController = {
       return res.status(500).json({ message: error });
     }
   },
-  deleteRequest: async (req: Request, res: Response) => {
-    const { MSSV, MSCB } = req.body;
-
-    if (!MSCB && !MSSV)
-      return res.status(400).json({ message: "MSCB and MSSV is required !!!" });
+  acceptRequest: async (req: Request, res: Response) => {
+    const { id } = req.body;
+    if (!id)
+      return res.status(400).json({ message: "Request id is required !!!" });
 
     try {
+      const requestDocument = await RequestModel.findById(id);
+      console.log(id);
+
+      console.log(requestDocument);
       const studentDocument = await StudentModel.findOne({
-        MSSV,
-      });
+        MSSV: requestDocument.MSSV,
+      }).populate("profile");
       const teacherDocument = await TeacherModel.findOne({
-        MSCB,
-      });
+        MSCB: requestDocument.MSCB,
+      }).populate("profile");
+
+      studentDocument.teacher = teacherDocument.toObject();
+      teacherDocument.studentList.push(studentDocument.toObject());
 
       const filteredSentRequestList = studentDocument.sentRequestList.filter(
-        (request) => request.MSCB != MSCB
+        (request) => request._id != id
       );
       studentDocument.sentRequestList = filteredSentRequestList;
       const filteredReceivedRequestList =
         teacherDocument.receivedRequestList.filter(
-          (request) => request.MSSV != MSSV
+          (request) => request._id != id
         );
       teacherDocument.receivedRequestList = filteredReceivedRequestList;
 
-      studentDocument.save();
-      teacherDocument.save();
+      await studentDocument.save();
+      await teacherDocument.save();
+      requestDocument.remove();
+
+      return res.status(200).json({
+        message: "Request Accepted!",
+        studentData: studentDocument,
+        teacherData: teacherDocument,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: error });
+    }
+  },
+  rejectRequest: async (req: Request, res: Response) => {
+    const { id } = req.body;
+
+    if (!id)
+      return res.status(400).json({ message: "Request id is required !!!" });
+
+    try {
+      const requestDocument = await RequestModel.findById(id);
+      const studentDocument = await StudentModel.findOne({
+        MSSV: requestDocument.MSSV,
+      });
+      const teacherDocument = await TeacherModel.findOne({
+        MSCB: requestDocument.MSCB,
+      });
+
+      const filteredSentRequestList = studentDocument.sentRequestList.filter(
+        (request) => request._id != id
+      );
+      studentDocument.sentRequestList = filteredSentRequestList;
+      const filteredReceivedRequestList =
+        teacherDocument.receivedRequestList.filter(
+          (request) => request._id != id
+        );
+      teacherDocument.receivedRequestList = filteredReceivedRequestList;
+
+      await studentDocument.save();
+      await teacherDocument.save();
+      requestDocument.remove();
 
       return res.status(200).json({
         message: "Request Deleted!",
@@ -81,6 +131,7 @@ export const requestController = {
         teacherData: teacherDocument,
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: error });
     }
   },

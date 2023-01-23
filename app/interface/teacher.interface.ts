@@ -1,10 +1,12 @@
+import { Request } from "./request.interface";
 import { Student } from "./student.interface";
-import { User } from "./user_and_roles.interface";
 
 export interface Teacher {
     MSCB: string;
     major: any;
-    receivedRequestList: { MSSV: string; name: string; email: string }[];
+    receivedRequestList: Request[];
     studentList: Student[];
     reportSchedule: any[];
+    createdAt?: Date;
+    updatedAt?: Date;
 }

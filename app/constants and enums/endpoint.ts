@@ -19,6 +19,8 @@ export const TEACHER_ROUTE = {
 };
 export const REQUEST_ROUTE = {
   BASE: "/",
+  ACCEPT: "/accept",
+  REJECT: "/reject",
 };
 export const NOTIFICATION_ROUTE = {
   BASE: "/",
