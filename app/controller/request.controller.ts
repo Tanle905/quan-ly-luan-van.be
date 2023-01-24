@@ -69,9 +69,13 @@ export const requestController = {
       teacherDocument.studentList.unshift(
         new mongoose.Types.ObjectId(studentDocument._id)
       );
-      
+
       studentDocument.sentRequestList = [];
-      teacherDocument.receivedRequestList = [];
+      const filteredReceivedRequestList =
+        teacherDocument.receivedRequestList.filter(
+          (request) => request._id != id
+        );
+      teacherDocument.receivedRequestList = filteredReceivedRequestList;
 
       await Promise.all([
         studentDocument.save(),

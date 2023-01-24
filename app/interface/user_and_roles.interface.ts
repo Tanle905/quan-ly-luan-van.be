@@ -16,6 +16,7 @@ export interface User {
   ethnic?: string;
   religion?: string;
   CCCD?: number;
+  notificationCount: number;
   createdAt?: Date;
   updatedAt?: Date;
 }

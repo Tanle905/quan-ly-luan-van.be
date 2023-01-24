@@ -40,6 +40,10 @@ export const userDataSchema: Schema = new mongoose.Schema<User>(
     CCCD: {
       type: Number,
     },
+    notificationCount: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },

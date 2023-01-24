@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { NotificationModel } from "../model/notification.model";
+import { UserModel } from "../model/user.model";
 
 export const notificationController = {
   getNotification: async (req: Request, res: Response) => {
@@ -26,8 +27,11 @@ export const notificationController = {
         content,
         type,
       });
+      const receiverDocument = await UserModel.findById(receiver);
+      
+      receiverDocument.notificationCount += 1;
 
-      notificationDocument.save();
+      Promise.all([notificationDocument.save(), receiverDocument.save()]);
 
       return res.status(200).json({ message: "Notification sent!" });
     } catch (error) {
