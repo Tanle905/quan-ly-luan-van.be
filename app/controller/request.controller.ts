@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import { ObjectId } from "mongodb";
+import mongoose from "mongoose";
 import { RequestModel } from "../model/request.model";
 import { StudentModel } from "../model/student.model";
 import { TeacherModel } from "../model/teacher.model";
@@ -59,9 +61,7 @@ export const requestController = {
 
     try {
       const requestDocument = await RequestModel.findById(id);
-      console.log(id);
 
-      console.log(requestDocument);
       const studentDocument = await StudentModel.findOne({
         MSSV: requestDocument.MSSV,
       }).populate("profile");
@@ -69,8 +69,12 @@ export const requestController = {
         MSCB: requestDocument.MSCB,
       }).populate("profile");
 
-      studentDocument.teacher = teacherDocument.toObject();
-      teacherDocument.studentList.push(studentDocument.toObject());
+      studentDocument.teacher = new mongoose.Types.ObjectId(
+        teacherDocument._id
+      );
+      teacherDocument.studentList.push(
+        new mongoose.Types.ObjectId(studentDocument._id)
+      );
 
       const filteredSentRequestList = studentDocument.sentRequestList.filter(
         (request) => request._id != id

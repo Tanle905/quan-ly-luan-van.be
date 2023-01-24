@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { Student } from "../interface/student.interface";
+import { requestDataSchema } from "./request.model";
 
 export const studentDataSchema: Schema = new mongoose.Schema<Student>(
   {
@@ -19,16 +20,15 @@ export const studentDataSchema: Schema = new mongoose.Schema<Student>(
       type: String,
       required: true,
     },
-    sentRequestList: {
-      type: [Object],
-      default: [],
-    },
+    sentRequestList: [{ type: requestDataSchema }],
     topic: {
       type: Object,
     },
     teacher: {
-      type: Object,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Teacher",
     },
+
     thesisProgress: {
       type: Object,
     },
