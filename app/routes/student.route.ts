@@ -9,4 +9,4 @@ export const studentRouter = Router();
 studentRouter
   .route(STUDENT_ROUTE.BASE)
   .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
-  .get(studentController.get);
+  .post(studentController.get);
