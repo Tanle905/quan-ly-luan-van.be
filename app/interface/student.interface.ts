@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import { Request } from "./request.interface";
+import { User } from "./user_and_roles.interface";
 
-export interface Student {
+export interface Student extends User {
   MSSV: string;
   class: string;
   major: string;
@@ -11,6 +12,4 @@ export interface Student {
   teacher?: mongoose.Types.ObjectId;
   thesisProgress?: any;
   reportSchedule?: any;
-  createdAt?: Date;
-  updatedAt?: Date;
 }

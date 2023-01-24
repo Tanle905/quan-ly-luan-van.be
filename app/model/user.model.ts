@@ -1,8 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import {
-  User,
-  UserModelInterface,
-} from "../interface/user_and_roles.interface";
+import { User } from "../interface/user_and_roles.interface";
 
 export const userDataSchema: Schema = new mongoose.Schema<User>(
   {
@@ -34,12 +31,6 @@ export const userDataSchema: Schema = new mongoose.Schema<User>(
     isDeactivated: {
       type: Boolean,
     },
-    MSCB: {
-      type: String,
-    },
-    MSSV: {
-      type: String,
-    },
     ethnic: {
       type: String,
     },
@@ -47,31 +38,12 @@ export const userDataSchema: Schema = new mongoose.Schema<User>(
       type: String,
     },
     CCCD: {
-      type: String,
+      type: Number,
     },
   },
   {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
     timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },
   }
 );
 
-userDataSchema.virtual("studentProfile", {
-  ref: "Student",
-  localField: "MSSV",
-  foreignField: "MSSV",
-  justOne: true,
-});
-
-userDataSchema.virtual("teacherProfile", {
-  ref: "Teacher",
-  localField: "MSCB",
-  foreignField: "MSCB",
-  justOne: true,
-});
-
-export const UserModel = mongoose.model<User, UserModelInterface>(
-  "User",
-  userDataSchema
-);
+export const UserModel = mongoose.model<User>("User", userDataSchema);

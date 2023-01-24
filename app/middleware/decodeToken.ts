@@ -1,9 +1,8 @@
-import { NextFunction, Response } from "express";
-import { UserRequest } from "../interface/user_and_roles.interface";
+import { NextFunction, Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
 
 export const decodeToken = {
-  decodeToken: async (req: UserRequest, res: Response, next: NextFunction) => {
+  decodeToken: async (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization) return next();
     let token = (req.headers.authorization as string).replace("Bearer ", "");
 

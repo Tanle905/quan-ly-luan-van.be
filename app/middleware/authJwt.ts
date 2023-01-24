@@ -1,13 +1,12 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
 import { config } from "../config";
 import { ROLES } from "../constants and enums/variable";
-import { UserRequest } from "../interface/user_and_roles.interface";
 import { RoleModel } from "../model/role.model";
 import { UserModel } from "../model/user.model";
 
 export const authJwt = {
-  verifyToken: (req: UserRequest, res: Response, next: NextFunction) => {
+  verifyToken: (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization)
       return res.status(403).json({ message: "No token provided!" });
     let token = (req.headers.authorization as string).replace("Bearer ", "");
@@ -21,7 +20,7 @@ export const authJwt = {
       return res.status(401).json({ message: "Unauthorized!" });
     }
   },
-  isAdmin: (req: UserRequest, res: Response, next: NextFunction) => {
+  isAdmin: (req: Request, res: Response, next: NextFunction) => {
     const { userId } = res.locals;
 
     try {
@@ -46,7 +45,7 @@ export const authJwt = {
       return res.status(500).json({ message: error });
     }
   },
-  isStudent: (req: UserRequest, res: Response, next: NextFunction) => {
+  isStudent: (req: Request, res: Response, next: NextFunction) => {
     const { userId } = res.locals;
 
     try {
@@ -71,7 +70,7 @@ export const authJwt = {
       return res.status(500).json({ message: error });
     }
   },
-  isTeacher: (req: UserRequest, res: Response, next: NextFunction) => {
+  isTeacher: (req: Request, res: Response, next: NextFunction) => {
     const { userId } = res.locals;
 
     try {

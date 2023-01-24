@@ -9,6 +9,6 @@ export const notificationRouter = Router();
 notificationRouter
   .route(NOTIFICATION_ROUTE.BASE)
   .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
-  .get(notificationController.get)
-  .post(notificationController.post)
-  .put(notificationController.put);
+  .get(notificationController.getNotification)
+  .post(notificationController.addNotification)
+  .put(notificationController.setIsReadNotification);

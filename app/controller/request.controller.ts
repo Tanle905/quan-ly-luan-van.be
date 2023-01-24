@@ -15,35 +15,30 @@ export const requestController = {
     try {
       const studentDocument = await StudentModel.findOne({
         MSSV,
-      }).populate({ path: "profile", select: " -password" });
+      });
       const teacherDocument = await TeacherModel.findOne({
         MSCB,
-      }).populate({ path: "profile", select: " -password" });
+      });
 
       const newRequest = new RequestModel({
         MSSV,
         MSCB,
-        studentId: (studentDocument as any).profile._id,
-        teacherId: (teacherDocument as any).profile._id,
-        teacherName: `${(teacherDocument as any).profile.lastName} ${
-          (teacherDocument as any).profile.firstName
-        }`,
-        teacherEmail: (teacherDocument as any).profile.email,
-        studentName: `${(studentDocument as any).profile.lastName} ${
-          (studentDocument as any).profile.firstName
-        }`,
-        studentEmail: (studentDocument as any).profile.email,
+        studentId: studentDocument._id,
+        teacherId: teacherDocument._id,
+        teacherName: `${teacherDocument.lastName} ${teacherDocument.firstName}`,
+        teacherEmail: teacherDocument.email,
+        studentName: `${studentDocument.lastName} ${studentDocument.firstName}`,
+        studentEmail: studentDocument.email,
       });
 
-      studentDocument.sentRequestList.push(newRequest);
-      teacherDocument.receivedRequestList.push(newRequest);
+      studentDocument.sentRequestList.unshift(newRequest);
+      teacherDocument.receivedRequestList.unshift(newRequest);
 
-      studentDocument.save();
-      teacherDocument.save();
-      newRequest.save();
-
-      delete (studentDocument as any).profile;
-      delete (teacherDocument as any).profile;
+      await Promise.all([
+        studentDocument.save(),
+        teacherDocument.save(),
+        newRequest.save(),
+      ]);
 
       return res.status(200).json({
         message: "Request Sent!",
@@ -61,34 +56,35 @@ export const requestController = {
 
     try {
       const requestDocument = await RequestModel.findById(id);
-
       const studentDocument = await StudentModel.findOne({
         MSSV: requestDocument.MSSV,
-      }).populate("profile");
+      });
       const teacherDocument = await TeacherModel.findOne({
         MSCB: requestDocument.MSCB,
-      }).populate("profile");
+      });
 
       studentDocument.teacher = new mongoose.Types.ObjectId(
         teacherDocument._id
       );
-      teacherDocument.studentList.push(
+      teacherDocument.studentList.unshift(
         new mongoose.Types.ObjectId(studentDocument._id)
       );
 
       const filteredSentRequestList = studentDocument.sentRequestList.filter(
         (request) => request._id != id
       );
-      studentDocument.sentRequestList = filteredSentRequestList;
       const filteredReceivedRequestList =
         teacherDocument.receivedRequestList.filter(
           (request) => request._id != id
         );
+      studentDocument.sentRequestList = filteredSentRequestList;
       teacherDocument.receivedRequestList = filteredReceivedRequestList;
 
-      await studentDocument.save();
-      await teacherDocument.save();
-      requestDocument.remove();
+      await Promise.all([
+        studentDocument.save(),
+        teacherDocument.save(),
+        requestDocument.remove(),
+      ]);
 
       return res.status(200).json({
         message: "Request Accepted!",
@@ -96,7 +92,6 @@ export const requestController = {
         teacherData: teacherDocument,
       });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ message: error });
     }
   },
@@ -118,16 +113,18 @@ export const requestController = {
       const filteredSentRequestList = studentDocument.sentRequestList.filter(
         (request) => request._id != id
       );
-      studentDocument.sentRequestList = filteredSentRequestList;
       const filteredReceivedRequestList =
         teacherDocument.receivedRequestList.filter(
           (request) => request._id != id
         );
+      studentDocument.sentRequestList = filteredSentRequestList;
       teacherDocument.receivedRequestList = filteredReceivedRequestList;
 
-      await studentDocument.save();
-      await teacherDocument.save();
-      requestDocument.remove();
+      await Promise.all([
+        studentDocument.save(),
+        teacherDocument.save(),
+        requestDocument.remove(),
+      ]);
 
       return res.status(200).json({
         message: "Request Deleted!",
@@ -135,7 +132,6 @@ export const requestController = {
         teacherData: teacherDocument,
       });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ message: error });
     }
   },

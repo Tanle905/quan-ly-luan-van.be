@@ -1,10 +1,9 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
-import { UserRequest } from "../interface/user_and_roles.interface";
 import { UserModel } from "../model/user.model";
 
 export const userProfileController = {
-  get: async (req: UserRequest, res: Response) => {
+  get: async (req: Request, res: Response) => {
     const { userId } = res.locals;
 
     try {
@@ -27,11 +26,11 @@ export const userProfileController = {
       return res.status(500).json({ message: error });
     }
   },
-  put: async (req: UserRequest, res: Response) => {
+  put: async (req: Request, res: Response) => {
     const { userId } = res.locals;
 
     try {
-      const profileData = UserModel.extractUserData(req.body);
+      const profileData = req.body;
       UserModel.findByIdAndUpdate(
         new ObjectId(userId),
         {

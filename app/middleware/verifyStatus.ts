@@ -1,10 +1,9 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ObjectId } from "mongodb";
-import { UserRequest } from "../interface/user_and_roles.interface";
 import { UserModel } from "../model/user.model";
 
 export const verifyStatus = {
-  isNotDeactivated: (req: UserRequest, res: Response, next: NextFunction) => {
+  isNotDeactivated: (req: Request, res: Response, next: NextFunction) => {
     const { username } = req.body;
     const { userId } = res.locals;
     const filter = username ? { username } : { _id: new ObjectId(userId) };

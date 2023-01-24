@@ -1,11 +1,10 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { SYSTEM_ROLES } from "../constants and enums/variable";
-import { UserRequest } from "../interface/user_and_roles.interface";
 import { UserModel } from "../model/user.model";
 
 export const verifySignUp = {
   checkDuplicateUsernameOrEmail: async (
-    req: UserRequest,
+    req: Request,
     res: Response,
     next: NextFunction
   ) => {
@@ -30,7 +29,7 @@ export const verifySignUp = {
     }
   },
   checkRolesExisted: async (
-    req: UserRequest,
+    req: Request,
     res: Response,
     next: NextFunction
   ) => {

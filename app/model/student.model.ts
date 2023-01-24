@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { Student } from "../interface/student.interface";
 import { requestDataSchema } from "./request.model";
+import { UserModel } from "./user.model";
 
 export const studentDataSchema: Schema = new mongoose.Schema<Student>(
   {
@@ -26,7 +27,6 @@ export const studentDataSchema: Schema = new mongoose.Schema<Student>(
     },
     teacher: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Teacher",
     },
 
     thesisProgress: {
@@ -37,20 +37,11 @@ export const studentDataSchema: Schema = new mongoose.Schema<Student>(
     },
   },
   {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
     timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },
   }
 );
 
-studentDataSchema.virtual("profile", {
-  ref: "User",
-  localField: "MSSV",
-  foreignField: "MSSV",
-  justOne: true,
-});
-
-export const StudentModel = mongoose.model<Student>(
+export const StudentModel = UserModel.discriminator<Student>(
   "Student",
   studentDataSchema
 );

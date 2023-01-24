@@ -4,10 +4,7 @@ import { TeacherModel } from "../model/teacher.model";
 export const teacherController = {
   get: async (req: Request, res: Response) => {
     try {
-      const teacherDocuments = await TeacherModel.find({}).populate({
-        path: "profile",
-        select: "-password",
-      });
+      const teacherDocuments = await TeacherModel.find({});
 
       return res.status(200).json({ data: teacherDocuments });
     } catch (error) {

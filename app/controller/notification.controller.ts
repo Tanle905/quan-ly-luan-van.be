@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { NotificationModel } from "../model/notification.model";
 
 export const notificationController = {
-  get: async (req: Request, res: Response) => {
+  getNotification: async (req: Request, res: Response) => {
     const { userId } = res.locals;
 
     try {
@@ -15,7 +15,7 @@ export const notificationController = {
       return res.status(500).json(error);
     }
   },
-  post: async (req: Request, res: Response) => {
+  addNotification: async (req: Request, res: Response) => {
     const { userId } = res.locals;
     const { receiver, content, type } = req.body;
 
@@ -34,7 +34,7 @@ export const notificationController = {
       return res.status(500).json(error);
     }
   },
-  put: async (req: Request, res: Response) => {
+  setIsReadNotification: async (req: Request, res: Response) => {
     const { userId } = res.locals;
 
     try {
