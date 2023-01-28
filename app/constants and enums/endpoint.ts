@@ -25,6 +25,10 @@ export const REQUEST_ROUTE = {
 export const NOTIFICATION_ROUTE = {
   BASE: "/",
 };
+export const THESIS_PROGRESS_ROUTE = {
+  BASE: "/",
+  EVENT: "/event",
+};
 //Endpoints
 export const API_ENDPOINT = "/api";
 export const AUTH_ENDPOINT = "/auth";
@@ -34,3 +38,4 @@ export const STUDENT_ENDPOINT = "/student";
 export const TEACHER_ENDPOINT = "/teacher";
 export const REQUEST_ENDPOINT = "/request";
 export const NOTIFICATION_ENDPOINT = "/notification";
+export const THESIS_PROGRESS_ENDPOINT = "/thesis-progress";
