@@ -9,7 +9,7 @@ export const thesisProgressRouter = Router();
 thesisProgressRouter
   .route(THESIS_PROGRESS_ROUTE.BASE)
   .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
-  .post(thesisProgressController.getEventList);
+  .post(thesisProgressController.getThesisProgress);
 
 thesisProgressRouter
   .route(THESIS_PROGRESS_ROUTE.EVENT)

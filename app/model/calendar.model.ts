@@ -2,15 +2,24 @@ import mongoose from "mongoose";
 import { CalendarEvent } from "../interface/calendar.interface";
 
 export const CalendarEventDataSchema = new mongoose.Schema<CalendarEvent>({
-  backgroundColor: { type: String },
-  borderColor: { type: String },
-  editable: { type: Boolean },
+  id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    auto: true,
+  },
+  backgroundColor: { type: String, default: "#ad9734" },
+  borderColor: { type: String, default: "#ad9734" },
+  editable: { type: Boolean, default: false },
   end: {
     type: Date,
   },
   start: {
     type: Date,
   },
-  textColor: { type: String },
+  textColor: { type: String, default: "#fffffff" },
+  allDay: {
+    type: Boolean,
+    default: true,
+  },
   title: { type: String },
 });

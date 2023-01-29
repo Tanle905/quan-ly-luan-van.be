@@ -1,10 +1,13 @@
+import mongoose from "mongoose";
+
 export interface CalendarEvent {
-    start?: Date;
-    end?: Date;
-    title?: string;
-    backgroundColor?: string;
-    borderColor?: string;
-    editable?: boolean;
-    textColor?: string;
-  }
-  
+  id: mongoose.Types.ObjectId;
+  start?: Date;
+  end?: Date;
+  title?: string;
+  allDay?: boolean;
+  backgroundColor?: string;
+  borderColor?: string;
+  editable?: boolean;
+  textColor?: string;
+}
