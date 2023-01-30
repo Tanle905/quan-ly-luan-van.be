@@ -18,14 +18,16 @@ export const thesisProgressController = {
     }
   },
   addEvent: async (req: Request, res: Response) => {
-    try {
-      if (
-        Object.values(req.body).find(
-          (value) => value === undefined || value === null
-        )
+    if (
+      Object.values(req.body).find(
+        (value) => value === undefined || value === null
       )
-        return res.status(400).json({ message: "Missing required property!" });
+    )
+      return res.status(400).json({ message: "Missing required property!" });
 
+    if (!req.body.MSSV)
+      return res.status(400).json({ message: "MSSV is required!" });
+    try {
       const thesisProgressDocument = await ThesisProgressModel.findOneAndUpdate(
         {
           MSSV: req.body.MSSV,
@@ -46,6 +48,58 @@ export const thesisProgressController = {
       return res
         .status(200)
         .json({ data: thesisProgressDocument.toObject().events });
+    } catch (error) {
+      return res.status(500).json({ message: error });
+    }
+  },
+  editEvent: async (req: Request, res: Response) => {
+    if (
+      Object.values(req.body).find(
+        (value) => value === undefined || value === null
+      )
+    )
+      return res.status(400).json({ message: "Missing required property!" });
+
+    if (!req.body.MSSV)
+      return res.status(400).json({ message: "MSSV is required!" });
+
+    try {
+      const thesisProgressDocument = await ThesisProgressModel.findOne({
+        MSSV: req.body.MSSV,
+      });
+      const transformedEventList = thesisProgressDocument.events.map(
+        (event) => {
+          console.log(event.id, req.body.id);
+          if (event.id.toString() === req.body.id)
+            return { ...event, ...req.body };
+          return event;
+        }
+      );
+      thesisProgressDocument.events = transformedEventList;
+
+      await thesisProgressDocument.save();
+
+      return res.status(200).json({ message: "Event edited complete !" });
+    } catch (error) {
+      return res.status(500).json({ message: error });
+    }
+  },
+  deleteEvent: async (req: Request, res: Response) => {
+    if (!req.body.MSSV || !req.body.id)
+      return res.status(400).json({ message: "MSSV and id is required!" });
+
+    try {
+      const thesisProgressDocument = await ThesisProgressModel.findOne({
+        MSSV: req.body.MSSV,
+      });
+      const filteredEventList = thesisProgressDocument.events.filter(
+        (event) => event.id.toString() !== req.body.id
+      );
+      thesisProgressDocument.events = filteredEventList;
+
+      await thesisProgressDocument.save();
+
+      return res.status(200).json({ message: "Event delete complete !" });
     } catch (error) {
       return res.status(500).json({ message: error });
     }

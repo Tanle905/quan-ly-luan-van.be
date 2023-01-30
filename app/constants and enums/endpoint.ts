@@ -27,7 +27,10 @@ export const NOTIFICATION_ROUTE = {
 };
 export const THESIS_PROGRESS_ROUTE = {
   BASE: "/",
-  EVENT: "/event",
+  EVENT: {
+    BASE: "/event",
+    DELETE: "/delete",
+  },
 };
 //Endpoints
 export const API_ENDPOINT = "/api";
