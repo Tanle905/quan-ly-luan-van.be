@@ -7,10 +7,11 @@ export const thesisProgressController = {
     try {
       if (!MSSV) return res.status(400).json({ message: "MSSV is required!" });
 
-      const eventDocuments = await ThesisProgressModel.findOne({ MSSV });
-
-      if (!eventDocuments)
-        return res.status(404).json({ message: "No documents were found!" });
+      const eventDocuments = await ThesisProgressModel.findOne(
+        { MSSV },
+        {},
+        { upsert: true }
+      );
 
       return res.status(200).json({ data: eventDocuments });
     } catch (error) {

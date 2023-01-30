@@ -31,6 +31,7 @@ export const THESIS_PROGRESS_ROUTE = {
     BASE: "/event",
     DELETE: "/delete",
   },
+  ID: "/:id",
 };
 //Endpoints
 export const API_ENDPOINT = "/api";
