@@ -11,3 +11,8 @@ profileRouter
   .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
   .get(userProfileController.get)
   .put(userProfileController.put);
+
+profileRouter
+  .route(USER_PROFILE_ROUTE.ID)
+  .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
+  .get(userProfileController.getById);

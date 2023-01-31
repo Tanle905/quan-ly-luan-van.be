@@ -5,7 +5,7 @@ export const AUTH_ROUTE = {
 };
 export const USER_PROFILE_ROUTE = {
   BASE: "/",
-  ID: "/:id",
+  ID: "/:userId",
 };
 export const USER_MANAGEMENT_ROUTE = {
   BASE: "/",
