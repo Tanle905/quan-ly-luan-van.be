@@ -5,7 +5,7 @@ export const AUTH_ROUTE = {
 };
 export const USER_PROFILE_ROUTE = {
   BASE: "/",
-  ID: "/:id",
+  ID: "/:userId",
 };
 export const USER_MANAGEMENT_ROUTE = {
   BASE: "/",
@@ -25,9 +25,16 @@ export const REQUEST_ROUTE = {
 export const NOTIFICATION_ROUTE = {
   BASE: "/",
 };
+export const TOPIC_ROUTE = {
+  BASE: "/",
+};
 export const THESIS_PROGRESS_ROUTE = {
   BASE: "/",
-  EVENT: "/event",
+  EVENT: {
+    BASE: "/event",
+    DELETE: "/delete",
+  },
+  ID: "/:id",
 };
 //Endpoints
 export const API_ENDPOINT = "/api";
@@ -38,4 +45,5 @@ export const STUDENT_ENDPOINT = "/student";
 export const TEACHER_ENDPOINT = "/teacher";
 export const REQUEST_ENDPOINT = "/request";
 export const NOTIFICATION_ENDPOINT = "/notification";
+export const TOPIC_ENDPOINT = "/topic";
 export const THESIS_PROGRESS_ENDPOINT = "/thesis-progress";

@@ -12,6 +12,12 @@ thesisProgressRouter
   .post(thesisProgressController.getThesisProgress);
 
 thesisProgressRouter
-  .route(THESIS_PROGRESS_ROUTE.EVENT)
+  .route(THESIS_PROGRESS_ROUTE.EVENT.BASE)
   .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
-  .post(thesisProgressController.addEvent);
+  .post(thesisProgressController.addEvent)
+  .put(thesisProgressController.editEvent);
+
+thesisProgressRouter
+  .route(THESIS_PROGRESS_ROUTE.EVENT.BASE + THESIS_PROGRESS_ROUTE.EVENT.DELETE)
+  .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
+  .post(thesisProgressController.deleteEvent);
