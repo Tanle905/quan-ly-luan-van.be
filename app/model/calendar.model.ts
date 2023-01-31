@@ -21,5 +21,9 @@ export const CalendarEventDataSchema = new mongoose.Schema<CalendarEvent>({
     type: Boolean,
     default: true,
   },
-  title: { type: String },
+  title: { type: String, required: true },
+  description: {
+    type: String,
+    required: true,
+  },
 });
