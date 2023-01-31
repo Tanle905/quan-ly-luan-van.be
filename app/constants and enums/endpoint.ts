@@ -25,6 +25,9 @@ export const REQUEST_ROUTE = {
 export const NOTIFICATION_ROUTE = {
   BASE: "/",
 };
+export const TOPIC_ROUTE = {
+  BASE: "/",
+};
 export const THESIS_PROGRESS_ROUTE = {
   BASE: "/",
   EVENT: {
@@ -42,4 +45,5 @@ export const STUDENT_ENDPOINT = "/student";
 export const TEACHER_ENDPOINT = "/teacher";
 export const REQUEST_ENDPOINT = "/request";
 export const NOTIFICATION_ENDPOINT = "/notification";
+export const TOPIC_ENDPOINT = "/topic";
 export const THESIS_PROGRESS_ENDPOINT = "/thesis-progress";

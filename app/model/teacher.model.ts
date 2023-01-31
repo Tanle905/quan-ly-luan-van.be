@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { Teacher } from "../interface/teacher.interface";
 import { requestDataSchema } from "./request.model";
+import { topicDataSchema } from "./topic.model";
 import { UserModel } from "./user.model";
 
 export const teacherDataSchema: Schema = new mongoose.Schema<Teacher>(
@@ -14,6 +15,7 @@ export const teacherDataSchema: Schema = new mongoose.Schema<Teacher>(
     },
     receivedRequestList: [{ type: requestDataSchema }],
     studentList: [{ type: mongoose.Schema.Types.ObjectId }],
+    receivedTopicList: [{ type: topicDataSchema }],
     reportSchedule: [
       {
         type: Object,

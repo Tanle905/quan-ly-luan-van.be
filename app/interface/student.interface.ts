@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { Request } from "./request.interface";
+import { Topic } from "./topic.interface";
 import { User } from "./user_and_roles.interface";
 
 export interface Student extends User {
@@ -8,8 +9,7 @@ export interface Student extends User {
   major: string;
   department: string;
   sentRequestList?: Request[];
-  topic?: any;
   teacher?: mongoose.Types.ObjectId;
-  thesisProgress?: any;
+  sentTopic?: Topic;
   reportSchedule?: any;
 }
