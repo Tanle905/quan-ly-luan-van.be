@@ -3,6 +3,8 @@ import * as bcrypt from "bcryptjs";
 import { Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
 import { config } from "../config";
+import { TeacherModel } from "../model/teacher.model";
+import { ObjectId } from "mongodb";
 
 export const authController = {
   signin: async (req: Request, res: Response) => {
@@ -34,6 +36,14 @@ export const authController = {
       //Map role to userClone
       for (let i = 0; i < userDocument.roles.length; i++) {
         authorities.push(userClone.roles[i].name);
+      }
+
+      if ((userClone as any).teacher) {
+        const teacherDocument = await TeacherModel.findById(
+          (userClone as any).teacher
+        ).select("MSCB firstName lastName email");
+
+        userClone["teacher"] = teacherDocument.toObject();
       }
 
       return res.status(200).json({

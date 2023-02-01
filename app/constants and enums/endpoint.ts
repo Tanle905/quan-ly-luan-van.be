@@ -27,6 +27,7 @@ export const NOTIFICATION_ROUTE = {
 };
 export const TOPIC_ROUTE = {
   BASE: "/",
+  ID: "/:id",
 };
 export const THESIS_PROGRESS_ROUTE = {
   BASE: "/",
