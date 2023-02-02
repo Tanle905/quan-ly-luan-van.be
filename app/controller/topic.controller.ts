@@ -49,7 +49,7 @@ export const topicController = {
 
       studentDocument.sentTopic.topicStatus = TopicStatus.RequestChange;
 
-      studentDocument.save();
+      await studentDocument.save();
 
       return res
         .status(200)
@@ -69,6 +69,8 @@ export const topicController = {
       });
 
       studentDocument.sentTopic.topicStatus = TopicStatus.Accepted;
+
+      await studentDocument.save();
 
       return res
         .status(200)
