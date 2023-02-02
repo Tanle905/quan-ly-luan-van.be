@@ -4,7 +4,6 @@ import { Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
 import { config } from "../config";
 import { TeacherModel } from "../model/teacher.model";
-import { ObjectId } from "mongodb";
 
 export const authController = {
   signin: async (req: Request, res: Response) => {
@@ -38,6 +37,7 @@ export const authController = {
         authorities.push(userClone.roles[i].name);
       }
 
+      //Map teacher to user if user is student
       if ((userClone as any).teacher) {
         const teacherDocument = await TeacherModel.findById(
           (userClone as any).teacher
