@@ -15,7 +15,6 @@ export const teacherDataSchema: Schema = new mongoose.Schema<Teacher>(
     },
     receivedRequestList: [{ type: requestDataSchema }],
     studentList: [{ type: mongoose.Schema.Types.ObjectId }],
-    receivedTopicList: [{ type: topicDataSchema }],
     reportSchedule: [
       {
         type: Object,

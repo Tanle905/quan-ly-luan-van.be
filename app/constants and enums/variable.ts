@@ -4,3 +4,8 @@ export const ROLES = {
   ADMIN: "ROLE_ADMIN",
 };
 export const SYSTEM_ROLES = [ROLES.ADMIN, ROLES.STUDENT, ROLES.TEACHER];
+export enum TopicStatus {
+  Pending = "pending",
+  RequestChange = "requestChange",
+  Accepted = "accepted",
+}

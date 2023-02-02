@@ -46,7 +46,7 @@ export const requestController = {
         teacherData: teacherDocument,
       });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
   acceptRequest: async (req: Request, res: Response) => {
@@ -89,7 +89,7 @@ export const requestController = {
         teacherData: teacherDocument,
       });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
   rejectRequest: async (req: Request, res: Response) => {
@@ -129,7 +129,7 @@ export const requestController = {
         teacherData: teacherDocument,
       });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
 };

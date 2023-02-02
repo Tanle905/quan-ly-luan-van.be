@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
+import { TopicStatus } from "../constants and enums/variable";
 import { StudentModel } from "../model/student.model";
-import { TeacherModel } from "../model/teacher.model";
 
 export const topicController = {
   getTopic: async (req: Request, res: Response) => {
@@ -15,10 +15,10 @@ export const topicController = {
 
       return res.status(200).json({ data: studentDocument.sentTopic });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
-  requestTopic: async (req: Request, res: Response) => {
+  sendTopic: async (req: Request, res: Response) => {
     const { MSSV, MSCB } = req.body;
 
     if (!MSSV || !MSCB)
@@ -26,16 +26,36 @@ export const topicController = {
 
     try {
       const studentDocument = await StudentModel.findOne({ MSSV });
-      const teacherDocument = await TeacherModel.findOne({ MSCB });
 
       studentDocument.sentTopic = req.body;
-      teacherDocument.receivedTopicList.unshift(req.body);
+      studentDocument.sentTopic.topicStatus = TopicStatus.Pending;
 
-      await Promise.all([studentDocument.save(), teacherDocument.save()]);
+      await studentDocument.save();
 
       return res.status(200).json({ data: studentDocument.sentTopic });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ message: "Internal Error" });
+    }
+  },
+  requestChangeTopic: async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!id) return res.status(400).json({ message: "Topic id is required !" });
+
+    try {
+      const studentDocument = await StudentModel.findOne({
+        "sentTopic._id": new ObjectId(id),
+      });
+
+      studentDocument.sentTopic.topicStatus = TopicStatus.RequestChange;
+
+      studentDocument.save();
+
+      return res
+        .status(200)
+        .json({ message: "Request change topic complete !" });
+    } catch (error) {
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
   acceptTopic: async (req: Request, res: Response) => {
@@ -48,9 +68,13 @@ export const topicController = {
         "sentTopic._id": new ObjectId(id),
       });
 
-      return res.status(200).json();
+      studentDocument.sentTopic.topicStatus = TopicStatus.Accepted;
+
+      return res
+        .status(200)
+        .json({ message: "Accepted topic complete !" });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
 };

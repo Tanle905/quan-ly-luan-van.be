@@ -10,9 +10,10 @@ topicRouter
   .route(TOPIC_ROUTE.BASE)
   .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
   .get(topicController.getTopic)
-  .post(topicController.requestTopic);
+  .post(topicController.sendTopic);
 
 topicRouter
   .route(TOPIC_ROUTE.ID)
   .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
-  .post(topicController.acceptTopic);
+  .post(topicController.acceptTopic)
+  .put(topicController.requestChangeTopic);

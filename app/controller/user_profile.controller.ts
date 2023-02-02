@@ -11,7 +11,7 @@ export const userProfileController = {
         .select("-password")
         .populate("roles", "-__v")
         .exec((error, user: any) => {
-          if (error) return res.status(400).json({ message: error });
+          if (error) return res.status(400).json({ message: "Internal Error" });
           if (!user)
             return res.status(404).json({ message: "User Not found!" });
           const authorities = [];
@@ -23,7 +23,7 @@ export const userProfileController = {
             .json({ ...user.toObject(), roles: authorities });
         });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
   getById: async (req: Request, res: Response) => {
@@ -34,7 +34,7 @@ export const userProfileController = {
         .select("-password")
         .populate("roles", "-__v")
         .exec((error, user: any) => {
-          if (error) return res.status(400).json({ message: error });
+          if (error) return res.status(400).json({ message: "Internal Error" });
           if (!user)
             return res.status(404).json({ message: "User Not found!" });
           const authorities = [];
@@ -46,7 +46,7 @@ export const userProfileController = {
             .json({ ...user.toObject(), roles: authorities });
         });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
   put: async (req: Request, res: Response) => {
@@ -66,7 +66,7 @@ export const userProfileController = {
         .select("-password")
         .populate("roles", "-__v")
         .exec(async (error, user: any) => {
-          if (error) return res.status(400).json({ message: error });
+          if (error) return res.status(400).json({ message: "Internal Error" });
           if (!user)
             return res.status(404).json({ message: "User Not found!" });
           const authorities = [];
@@ -79,7 +79,7 @@ export const userProfileController = {
             .json({ ...user.toObject(), roles: authorities });
         });
     } catch (error) {
-      res.status(500).json({ message: error });
+      res.status(500).json({ message: "Internal Error" });
     }
   },
 };

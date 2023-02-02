@@ -1,4 +1,5 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import { TopicStatus } from "../constants and enums/variable";
 import { Topic } from "../interface/topic.interface";
 
 export const topicDataSchema = new mongoose.Schema<Topic>(
@@ -23,9 +24,10 @@ export const topicDataSchema = new mongoose.Schema<Topic>(
       type: String,
       required: true,
     },
-    isTopicAccepted: {
-      type: Boolean,
-      default: false,
+    topicStatus: {
+      type: Schema.Types.Mixed,
+      enum: TopicStatus,
+      default: TopicStatus.Pending,
     },
   },
   {

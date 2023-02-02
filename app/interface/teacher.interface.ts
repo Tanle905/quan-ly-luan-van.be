@@ -8,6 +8,5 @@ export interface Teacher extends User {
   major: any;
   receivedRequestList: Request[];
   studentList: mongoose.Types.ObjectId[];
-  receivedTopicList: Topic[];
   reportSchedule: any[];
 }
