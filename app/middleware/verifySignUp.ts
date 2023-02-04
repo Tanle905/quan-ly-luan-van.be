@@ -25,7 +25,7 @@ export const verifySignUp = {
         }
       });
     } catch (error) {
-      return res.status(500).send({ message: error });
+      return res.status(500).send({ message: "Internal Error" });
     }
   },
   checkRolesExisted: async (

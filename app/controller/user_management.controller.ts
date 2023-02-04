@@ -8,7 +8,7 @@ export const userManagementController = {
       const document = await UserModel.find().select("-password -roles -__v");
       return res.status(200).json({ data: [...document] });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
   handleDeactivateUser: async (req: Request, res: Response) => {
@@ -22,7 +22,7 @@ export const userManagementController = {
         .status(200)
         .json({ message: "User status changed successfully!" });
     } catch (error) {
-      res.status(500).json({ message: error });
+      res.status(500).json({ message: "Internal Error" });
     }
   },
 };

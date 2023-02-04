@@ -3,6 +3,7 @@ import * as bcrypt from "bcryptjs";
 import { Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
 import { config } from "../config";
+import { TeacherModel } from "../model/teacher.model";
 
 export const authController = {
   signin: async (req: Request, res: Response) => {
@@ -36,13 +37,22 @@ export const authController = {
         authorities.push(userClone.roles[i].name);
       }
 
+      //Map teacher to user if user is student
+      if ((userClone as any).teacher) {
+        const teacherDocument = await TeacherModel.findById(
+          (userClone as any).teacher
+        ).select("MSCB firstName lastName email");
+
+        userClone["teacher"] = teacherDocument.toObject();
+      }
+
       return res.status(200).json({
         ...userClone,
         roles: authorities,
         accessToken: token,
       });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
 };

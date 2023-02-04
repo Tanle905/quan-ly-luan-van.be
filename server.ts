@@ -10,6 +10,7 @@ import {
   STUDENT_ENDPOINT,
   TEACHER_ENDPOINT,
   THESIS_PROGRESS_ENDPOINT,
+  TOPIC_ENDPOINT,
   USER_MANAGEMENT_ENDPOINT,
   USER_PROFILE_ENDPOINT,
 } from "./app/constants and enums/endpoint";
@@ -21,6 +22,7 @@ import { requestRouter } from "./app/routes/request.route";
 import { notificationRouter } from "./app/routes/notification.route";
 import { studentRouter } from "./app/routes/student.route";
 import { thesisProgressRouter } from "./app/routes/thesis-progress.route";
+import { topicRouter } from "./app/routes/topic.route";
 
 //Config
 const app: Application = express();
@@ -44,5 +46,7 @@ app.use(REQUEST_ENDPOINT, requestRouter);
 app.use(NOTIFICATION_ENDPOINT, notificationRouter);
 app.use(STUDENT_ENDPOINT, studentRouter);
 app.use(THESIS_PROGRESS_ENDPOINT, thesisProgressRouter);
+app.use(TOPIC_ENDPOINT, topicRouter);
+
 
 app.listen(port, () => {});

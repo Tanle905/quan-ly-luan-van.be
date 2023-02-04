@@ -15,7 +15,7 @@ export const thesisProgressController = {
 
       return res.status(200).json({ data: eventDocuments });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
   addEvent: async (req: Request, res: Response) => {
@@ -50,7 +50,7 @@ export const thesisProgressController = {
         .status(200)
         .json({ data: thesisProgressDocument.toObject().events });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
   editEvent: async (req: Request, res: Response) => {
@@ -82,7 +82,7 @@ export const thesisProgressController = {
 
       return res.status(200).json({ message: "Event edited complete !" });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
   deleteEvent: async (req: Request, res: Response) => {
@@ -102,7 +102,7 @@ export const thesisProgressController = {
 
       return res.status(200).json({ message: "Event delete complete !" });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
 };

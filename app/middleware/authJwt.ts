@@ -42,7 +42,7 @@ export const authJwt = {
         );
       });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
   isStudent: (req: Request, res: Response, next: NextFunction) => {
@@ -67,7 +67,7 @@ export const authJwt = {
         );
       });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
   isTeacher: (req: Request, res: Response, next: NextFunction) => {
@@ -92,7 +92,7 @@ export const authJwt = {
         );
       });
     } catch (error) {
-      return res.status(500).json({ message: error });
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
 };
