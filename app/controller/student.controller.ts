@@ -4,6 +4,7 @@ import { StudentModel } from "../model/student.model";
 export const studentController = {
   get: async (req: Request, res: Response) => {
     const { studentList } = req.body;
+    
     try {
       const teacherDocuments = await StudentModel.find({
         _id: {

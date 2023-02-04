@@ -18,6 +18,7 @@ export const userProfileController = {
           for (let i = 0; i < user.roles.length; i++) {
             authorities.push(user.roles[i].name);
           }
+
           return res
             .status(200)
             .json({ ...user.toObject(), roles: authorities });
