@@ -13,7 +13,7 @@ export const notificationController = {
 
       return res.status(200).json(notificationDocuments);
     } catch (error) {
-      return res.status(500).json(error);
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
   addNotification: async (req: Request, res: Response) => {
@@ -35,7 +35,7 @@ export const notificationController = {
 
       return res.status(200).json({ message: "Notification sent!" });
     } catch (error) {
-      return res.status(500).json(error);
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
   setIsReadNotification: async (req: Request, res: Response) => {
@@ -51,7 +51,7 @@ export const notificationController = {
 
       return res.status(200);
     } catch (error) {
-      return res.status(500).json(error);
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
 };

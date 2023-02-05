@@ -1,3 +1,9 @@
 export interface Tag {
-  majorTags: [string];
+  name: string;
+  list: [TagDetails];
+}
+
+export interface TagDetails {
+  color?: string;
+  value: string;
 }

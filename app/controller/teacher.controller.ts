@@ -4,7 +4,8 @@ import { TeacherModel } from "../model/teacher.model";
 
 export const teacherController = {
   get: async (req: Request, res: Response) => {
-    const { search, tags, sortBy, isAscSorting } = req.query;
+    const { search, majorTags, sortBy, isAscSorting } = req.query;
+    const majorTagsList = majorTags && (majorTags as string).split(",");
 
     try {
       const teacherDocuments = await TeacherModel.find({
@@ -17,7 +18,15 @@ export const teacherController = {
                 { MSCB: { $regex: search, $options: "i" } },
               ],
             }
-          : {}),
+          : {
+              ...(majorTagsList
+                ? {
+                    majorTags: {
+                      $in: majorTagsList,
+                    },
+                  }
+                : {}),
+            }),
       })
         .sort(
           sortBy
@@ -32,7 +41,7 @@ export const teacherController = {
 
       return res.status(200).json({ data: teacherDocuments });
     } catch (error) {
-      return res.status(500).json(error);
+      return res.status(500).json({ message: "Internal Error" });
     }
   },
 };
