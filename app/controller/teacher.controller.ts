@@ -9,6 +9,13 @@ export const teacherController = {
 
     try {
       const teacherDocuments = await TeacherModel.find({
+        ...(majorTagsList
+          ? {
+              majorTags: {
+                $in: majorTagsList,
+              },
+            }
+          : {}),
         ...(search
           ? {
               $or: [
@@ -18,15 +25,7 @@ export const teacherController = {
                 { MSCB: { $regex: search, $options: "i" } },
               ],
             }
-          : {
-              ...(majorTagsList
-                ? {
-                    majorTags: {
-                      $in: majorTagsList,
-                    },
-                  }
-                : {}),
-            }),
+          : {}),
       })
         .sort(
           sortBy
