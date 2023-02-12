@@ -9,4 +9,4 @@ export const teacherRouter = Router();
 teacherRouter
   .route(TEACHER_ROUTE.BASE)
   .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
-  .get(teacherController.get);
+  .post(teacherController.get);

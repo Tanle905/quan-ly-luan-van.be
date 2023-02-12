@@ -1,17 +1,19 @@
 import { Request, Response } from "express";
+import { ObjectId } from "mongodb";
 import { StudentModel } from "../model/student.model";
 
 export const studentController = {
-  get: async (req: Request, res: Response) => {
-    const { studentList } = req.body;
-    try {
-      const teacherDocuments = await StudentModel.find({
-        _id: {
-          $in: studentList,
-        },
-      });
+  post: async (req: Request, res: Response) => {
+    const { userId } = res.locals;
 
-      return res.status(200).json({ data: teacherDocuments });
+    try {
+      const studentDocuments = await StudentModel.find({
+        teacher: new ObjectId(userId),
+      }).select(
+        "-id -password -username -imageUrl -roles -__t -sentRequest -createdAt -updatedAt -__v -teacher -notification -notificationCount -sentTopic"
+      );
+
+      return res.status(200).json({ data: studentDocuments });
     } catch (error) {
       return res.status(500).json(error);
     }
