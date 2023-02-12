@@ -16,3 +16,8 @@ profileRouter
   .route(USER_PROFILE_ROUTE.ID)
   .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
   .get(userProfileController.getById);
+
+profileRouter
+  .route(USER_PROFILE_ROUTE.TAG)
+  .all([authJwt.verifyToken, verifyStatus.isNotDeactivated, authJwt.isTeacher])
+  .post(userProfileController.modifyMajorTags);

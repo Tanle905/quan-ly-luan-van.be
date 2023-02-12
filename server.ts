@@ -8,6 +8,7 @@ import {
   NOTIFICATION_ENDPOINT,
   REQUEST_ENDPOINT,
   STUDENT_ENDPOINT,
+  TAG_ENDPOINT,
   TEACHER_ENDPOINT,
   THESIS_PROGRESS_ENDPOINT,
   TOPIC_ENDPOINT,
@@ -23,6 +24,7 @@ import { notificationRouter } from "./app/routes/notification.route";
 import { studentRouter } from "./app/routes/student.route";
 import { thesisProgressRouter } from "./app/routes/thesis-progress.route";
 import { topicRouter } from "./app/routes/topic.route";
+import { tagRouter } from "./app/routes/tag.route";
 
 //Config
 const app: Application = express();
@@ -47,6 +49,7 @@ app.use(NOTIFICATION_ENDPOINT, notificationRouter);
 app.use(STUDENT_ENDPOINT, studentRouter);
 app.use(THESIS_PROGRESS_ENDPOINT, thesisProgressRouter);
 app.use(TOPIC_ENDPOINT, topicRouter);
+app.use(TAG_ENDPOINT, tagRouter);
 
 
 app.listen(port, () => {});

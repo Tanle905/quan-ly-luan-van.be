@@ -10,9 +10,12 @@ export const teacherDataSchema: Schema = new mongoose.Schema<Teacher>(
       type: String,
       required: true,
     },
-    major: {
-      type: Object,
-    },
+    majorTags: [
+      {
+        type: String,
+        default: [],
+      },
+    ],
     receivedRequestList: [{ type: requestDataSchema }],
     studentList: [{ type: mongoose.Schema.Types.ObjectId }],
     reportSchedule: [

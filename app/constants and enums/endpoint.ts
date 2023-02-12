@@ -6,6 +6,7 @@ export const AUTH_ROUTE = {
 export const USER_PROFILE_ROUTE = {
   BASE: "/",
   ID: "/:userId",
+  TAG: "/tag",
 };
 export const USER_MANAGEMENT_ROUTE = {
   BASE: "/",
@@ -37,6 +38,10 @@ export const THESIS_PROGRESS_ROUTE = {
   },
   ID: "/:id",
 };
+export const TAG_ROUTE = {
+  BASE: "/",
+  MAJOR_TAGS: "/major",
+};
 //Endpoints
 export const API_ENDPOINT = "/api";
 export const AUTH_ENDPOINT = "/auth";
@@ -48,3 +53,4 @@ export const REQUEST_ENDPOINT = "/request";
 export const NOTIFICATION_ENDPOINT = "/notification";
 export const TOPIC_ENDPOINT = "/topic";
 export const THESIS_PROGRESS_ENDPOINT = "/thesis-progress";
+export const TAG_ENDPOINT = "/tag";
