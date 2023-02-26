@@ -12,6 +12,9 @@ export const USER_MANAGEMENT_ROUTE = {
   BASE: "/",
   ID: "/:userId",
 };
+export const STUDENTT_MANAGEMENT_ROUTE = {
+  BASE: "/",
+};
 export const STUDENT_ROUTE = {
   BASE: "/",
 };
@@ -47,6 +50,7 @@ export const API_ENDPOINT = "/api";
 export const AUTH_ENDPOINT = "/auth";
 export const USER_PROFILE_ENDPOINT = "/profile";
 export const USER_MANAGEMENT_ENDPOINT = "/user-management";
+export const STUDENT_MANAGEMENT_ENDPOINT = "/student-management";
 export const STUDENT_ENDPOINT = "/student";
 export const TEACHER_ENDPOINT = "/teacher";
 export const REQUEST_ENDPOINT = "/request";
