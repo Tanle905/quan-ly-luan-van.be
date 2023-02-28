@@ -10,3 +10,8 @@ studentRouter
   .route(STUDENT_ROUTE.BASE)
   .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
   .post(studentController.post);
+
+studentRouter
+  .route(STUDENT_ROUTE.EXPORT)
+  .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
+  .post(studentController.exportStudent);

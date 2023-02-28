@@ -17,6 +17,7 @@ export const STUDENTT_MANAGEMENT_ROUTE = {
 };
 export const STUDENT_ROUTE = {
   BASE: "/",
+  EXPORT: "/export",
 };
 export const TEACHER_ROUTE = {
   BASE: "/",
