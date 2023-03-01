@@ -11,6 +11,7 @@ import {
   STUDENT_MANAGEMENT_ENDPOINT,
   TAG_ENDPOINT,
   TEACHER_ENDPOINT,
+  THESIS_DEFENSE_SCHEDULE_ENDPOINT,
   THESIS_PROGRESS_ENDPOINT,
   TOPIC_ENDPOINT,
   USER_MANAGEMENT_ENDPOINT,
@@ -27,6 +28,7 @@ import { thesisProgressRouter } from "./app/routes/thesis-progress.route";
 import { topicRouter } from "./app/routes/topic.route";
 import { tagRouter } from "./app/routes/tag.route";
 import { studentManagementRouter } from "./app/routes/student-management.route";
+import { thesisDefenseScheduleRouter } from "./app/routes/thesis-defense-schedule.route";
 
 //Config
 const app: Application = express();
@@ -53,5 +55,6 @@ app.use(STUDENT_ENDPOINT, studentRouter);
 app.use(THESIS_PROGRESS_ENDPOINT, thesisProgressRouter);
 app.use(TOPIC_ENDPOINT, topicRouter);
 app.use(TAG_ENDPOINT, tagRouter);
+app.use(THESIS_DEFENSE_SCHEDULE_ENDPOINT, thesisDefenseScheduleRouter);
 
 app.listen(port, () => {});

@@ -1,4 +1,8 @@
 //Routes
+export const COMMON_ROUTE = {
+  IMPORT: "/import",
+  EXPORT: "/export",
+};
 export const AUTH_ROUTE = {
   BASE: "/",
   LOGIN: "/login",
@@ -12,11 +16,12 @@ export const USER_MANAGEMENT_ROUTE = {
   BASE: "/",
   ID: "/:userId",
 };
-export const STUDENTT_MANAGEMENT_ROUTE = {
+export const STUDENT_MANAGEMENT_ROUTE = {
   BASE: "/",
 };
 export const STUDENT_ROUTE = {
   BASE: "/",
+  IMPORT: "/import",
   EXPORT: "/export",
 };
 export const TEACHER_ROUTE = {
@@ -46,6 +51,10 @@ export const TAG_ROUTE = {
   BASE: "/",
   MAJOR_TAGS: "/major",
 };
+export const THESIS_DEFENSE_SCHEDULE_ROUTE = {
+  BASE: "/",
+  STUDENT_LIST: "/student-list",
+};
 //Endpoints
 export const API_ENDPOINT = "/api";
 export const AUTH_ENDPOINT = "/auth";
@@ -59,3 +68,4 @@ export const NOTIFICATION_ENDPOINT = "/notification";
 export const TOPIC_ENDPOINT = "/topic";
 export const THESIS_PROGRESS_ENDPOINT = "/thesis-progress";
 export const TAG_ENDPOINT = "/tag";
+export const THESIS_DEFENSE_SCHEDULE_ENDPOINT = "/thesis-schedule";
