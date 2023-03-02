@@ -4,9 +4,9 @@ export interface Role {
 }
 export interface User {
   _id?: string;
-  username: string;
-  email: string;
-  password: string;
+  username?: string;
+  email?: string;
+  password?: string;
   roles?: Role[];
   firstName?: string;
   lastName?: string;
@@ -16,7 +16,7 @@ export interface User {
   ethnic?: string;
   religion?: string;
   CCCD?: number;
-  notificationCount: number;
+  notificationCount?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }

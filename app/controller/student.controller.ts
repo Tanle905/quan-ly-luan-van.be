@@ -61,9 +61,8 @@ export const studentController = {
 
           return {
             ...clonedDoc,
-            topicName: doc.sentTopic?.topicName,
-            isPassed: "",
-            isMarkedForIncompleted: "",
+            ["Cho phép báo cáo"]: "",
+            ["Nhận diểm I"]: "",
           };
         }),
       });
