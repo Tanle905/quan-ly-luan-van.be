@@ -9,6 +9,11 @@ export const requestRouter = Router();
 requestRouter
   .route(REQUEST_ROUTE.BASE)
   .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
+  .post(requestController.getRequest);
+
+requestRouter
+  .route(REQUEST_ROUTE.SEND)
+  .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
   .post(requestController.sendRequest);
 
 requestRouter

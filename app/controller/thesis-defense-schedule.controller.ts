@@ -53,7 +53,7 @@ export function handleConvertStudentList(list: any[][]): Student[] {
         email: curStudent.email,
         firstName: curStudent.firstName,
         lastName: curStudent.lastName,
-        thesisDefenseTime: undefined,
+        thesisDefenseTime: null,
       },
     ];
   }, []);

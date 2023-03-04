@@ -12,11 +12,11 @@ export const requestDataSchema: Schema = new mongoose.Schema<Request>(
       required: true,
     },
     studentId: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: true,
     },
     teacherId: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: true,
     },
     studentName: {

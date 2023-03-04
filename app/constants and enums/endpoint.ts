@@ -29,6 +29,7 @@ export const TEACHER_ROUTE = {
 };
 export const REQUEST_ROUTE = {
   BASE: "/",
+  SEND: "/send",
   ACCEPT: "/accept",
   REJECT: "/reject",
 };

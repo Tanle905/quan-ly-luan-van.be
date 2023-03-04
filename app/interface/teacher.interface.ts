@@ -6,7 +6,6 @@ import { User } from "./user_and_roles.interface";
 export interface Teacher extends User {
   MSCB: string;
   majorTags: string[];
-  receivedRequestList: Request[];
   studentList: mongoose.Types.ObjectId[];
   reportSchedule: any[];
 }
