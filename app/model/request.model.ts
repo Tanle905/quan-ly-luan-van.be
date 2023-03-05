@@ -1,40 +1,22 @@
 import mongoose, { Schema } from "mongoose";
 import { Request } from "../interface/request.interface";
+import { studentDataSchema } from "./student.model";
+import { teacherDataSchema } from "./teacher.model";
+import { userDataSchema } from "./user.model";
 
 export const requestDataSchema: Schema = new mongoose.Schema<Request>(
   {
-    MSCB: {
-      type: String,
+    student: {
+      type: studentDataSchema.add(userDataSchema),
       required: true,
     },
-    MSSV: {
-      type: String,
+    teacher: {
+      type: teacherDataSchema.add(userDataSchema),
       required: true,
     },
-    studentId: {
+    topic: {
       type: Schema.Types.ObjectId,
-      required: true,
-    },
-    teacherId: {
-      type: Schema.Types.ObjectId,
-      required: true,
-    },
-    studentName: {
-      type: String,
-      required: true,
-    },
-    studentEmail: {
-      type: String,
-      required: true,
-    },
-    teacherName: {
-      type: String,
-      required: true,
-    },
-    teacherEmail: {
-      type: String,
-      required: true,
-    },
+    }
   },
   {
     timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },

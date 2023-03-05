@@ -37,7 +37,9 @@ const mongoString = config.app.databaseUrl as string;
 mongoose.set("strictQuery", true);
 mongoose.connect(mongoString);
 export const database = mongoose.connection;
-app.use(morgan("combined"));
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms")
+);
 app.use(cors());
 app.use(express.json());
 

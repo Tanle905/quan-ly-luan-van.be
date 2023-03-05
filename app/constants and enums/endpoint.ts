@@ -21,6 +21,7 @@ export const STUDENT_MANAGEMENT_ROUTE = {
 };
 export const STUDENT_ROUTE = {
   BASE: "/",
+  MSSV: "/:MSSV",
   IMPORT: "/import",
   EXPORT: "/export",
 };
@@ -29,6 +30,7 @@ export const TEACHER_ROUTE = {
 };
 export const REQUEST_ROUTE = {
   BASE: "/",
+  ID: "/:requestId",
   SEND: "/send",
   ACCEPT: "/accept",
   REJECT: "/reject",
@@ -39,6 +41,7 @@ export const NOTIFICATION_ROUTE = {
 export const TOPIC_ROUTE = {
   BASE: "/",
   ID: "/:id",
+  SEND: "/send",
 };
 export const THESIS_PROGRESS_ROUTE = {
   BASE: "/",

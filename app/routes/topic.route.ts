@@ -7,13 +7,13 @@ import { verifyStatus } from "../middleware/verifyStatus";
 export const topicRouter = Router();
 
 topicRouter
-  .route(TOPIC_ROUTE.BASE)
-  .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
-  .get(topicController.getTopic)
-  .post(topicController.sendTopic);
-
-topicRouter
   .route(TOPIC_ROUTE.ID)
   .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
+  .get(topicController.getTopicById)
   .post(topicController.acceptTopic)
   .put(topicController.requestChangeTopic);
+
+topicRouter
+  .route(TOPIC_ROUTE.ID + TOPIC_ROUTE.SEND)
+  .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
+  .post(topicController.sendTopic);

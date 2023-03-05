@@ -32,7 +32,7 @@ export function handleCalCulateThesisDefenseTime(
           calculatedClendar.calculatedFreeTimesList[
             selectedTimeIndex
           ].calculatedFreeTeachersList.reduce((prevTeacher, curTeacher) => {
-            const matchedTags = student.sentTopic.tags?.reduce((prev, cur) => {
+            const matchedTags = student.topic.tags?.reduce((prev, cur) => {
               if (curTeacher.majorTags.includes(cur.name)) return (prev += 1);
               return prev;
             }, 0);
@@ -70,7 +70,7 @@ export function handleCalCulateThesisDefenseTime(
             MSSV: student.MSSV,
             studentName: `${student.firstName} ${student.lastName}`,
             teacherName: teacher.teacherName,
-            topicName: student.sentTopic.topicName,
+            topicName: student.topic.topicName,
           };
 
           calendar.thesisDefenseTimesList.push(newThesisDefenseTime);

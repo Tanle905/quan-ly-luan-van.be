@@ -29,8 +29,8 @@ export const studentDataSchema: Schema = new mongoose.Schema<Student>(
         type: String,
       },
     ],
-    sentTopic: {
-      type: topicDataSchema,
+    topic: {
+      type: Schema.Types.ObjectId,
     },
     reportSchedule: {
       type: Object,

@@ -3,9 +3,10 @@ import { cloneDeep } from "lodash";
 import { ObjectId } from "mongodb";
 import { SortOrder } from "mongoose";
 import { StudentModel } from "../model/student.model";
+import { TopicModel } from "../model/topic.model";
 
 export const studentController = {
-  post: async (req: Request, res: Response) => {
+  getStudent: async (req: Request, res: Response) => {
     const { search, sortBy, isAscSorting } = req.query;
     const { userId } = res.locals;
 
@@ -34,9 +35,33 @@ export const studentController = {
             : { MSSV: 1 }
         )
         .limit(10);
+      const mappedStudentDocument = await Promise.all(
+        studentDocuments.map(async (doc) => {
+          const topic = await TopicModel.findById(doc.topic);
+          return { ...doc.toObject(), topic };
+        })
+      );
 
       return res.status(200).json({
-        data: studentDocuments,
+        data: mappedStudentDocument,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: "Internal Error" });
+    }
+  },
+  getStudentByMSSV: async (req: Request, res: Response) => {
+    const { userId } = res.locals;
+    const { MSSV } = req.params;
+
+    try {
+      const studentDocuments = await StudentModel.findOne({
+        teacher: new ObjectId(userId),
+        MSSV,
+      }).select("-password");
+      const topic = await TopicModel.findById(studentDocuments.topic);
+
+      return res.status(200).json({
+        data: { ...studentDocuments.toObject(), topic },
       });
     } catch (error) {
       return res.status(500).json({ message: "Internal Error" });

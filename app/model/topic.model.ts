@@ -18,19 +18,25 @@ export const topicDataSchema = new mongoose.Schema<Topic>(
     },
     topicName: {
       type: String,
-      required: true,
+    },
+    topicEnglishName: {
+      type: String,
     },
     topicDescription: {
       type: String,
-      required: true,
     },
     topicStatus: {
       type: Schema.Types.Mixed,
       enum: TopicStatus,
-      default: TopicStatus.Pending,
+      default: null,
+    },
+    majorTag: {
+      type: String,
     },
   },
   {
     timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },
   }
 );
+
+export const TopicModel = mongoose.model("Topic", topicDataSchema);

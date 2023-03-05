@@ -1,7 +1,6 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { MatchedTeacher } from "../util/calculation.util";
 import { FreeTime } from "./schedule.interface";
-import { Topic } from "./topic.interface";
 import { User } from "./user_and_roles.interface";
 
 export interface Student extends User {
@@ -11,7 +10,7 @@ export interface Student extends User {
   department: string;
   teacher?: mongoose.Types.ObjectId;
   sentRequestsList?: string[];
-  sentTopic?: Topic;
+  topic?: Types.ObjectId;
   reportSchedule?: any;
   suitableThesisDefenseTeacherList?: MatchedTeacher[];
   thesisDefenseTime: FreeTime;

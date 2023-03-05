@@ -26,17 +26,13 @@ export const teacherController = {
               ],
             }
           : {}),
-      })
-        .sort(
-          sortBy
-            ? {
-                [sortBy as string]: parseInt(
-                  isAscSorting as string
-                ) as SortOrder,
-              }
-            : { MSCB: 1 }
-        )
-        .limit(10);
+      }).sort(
+        sortBy
+          ? {
+              [sortBy as string]: parseInt(isAscSorting as string) as SortOrder,
+            }
+          : { MSCB: 1 }
+      );
 
       return res.status(200).json({ data: teacherDocuments });
     } catch (error) {

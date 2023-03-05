@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
 import { config } from "../config";
 import { TeacherModel } from "../model/teacher.model";
+import { TopicModel } from "../model/topic.model";
 
 export const authController = {
   signin: async (req: Request, res: Response) => {
@@ -37,13 +38,20 @@ export const authController = {
         authorities.push(userClone.roles[i].name);
       }
 
-      //Map teacher to user if user is student
+      //Map teacher and topic to user if user is student
       if ((userClone as any).teacher) {
         const teacherDocument = await TeacherModel.findById(
           (userClone as any).teacher
         ).select("MSCB firstName lastName email");
 
         userClone["teacher"] = teacherDocument.toObject();
+      }
+      if ((userClone as any).topic) {
+        const topicDocument = await TopicModel.findById(
+          (userClone as any).topic
+        );
+
+        userClone["topic"] = topicDocument.toObject();
       }
 
       return res.status(200).json({

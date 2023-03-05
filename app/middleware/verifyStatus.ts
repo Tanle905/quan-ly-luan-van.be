@@ -18,6 +18,8 @@ export const verifyStatus = {
           .json({ message: "This account has been deactivated!" });
       });
     } catch (error) {
+      console.log(error);
+
       return res.status(500).json({ message: "Internal Error" });
     }
   },

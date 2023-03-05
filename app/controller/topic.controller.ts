@@ -1,38 +1,36 @@
 import { Request, Response } from "express";
-import { ObjectId } from "mongodb";
 import { TopicStatus } from "../constants and enums/variable";
-import { StudentModel } from "../model/student.model";
+import { TopicModel } from "../model/topic.model";
 
 export const topicController = {
-  getTopic: async (req: Request, res: Response) => {
-    const { MSSV, MSCB } = req.query;
-
-    if (!MSSV || !MSCB)
-      return res.status(400).json({ message: "MSSV or MSCB is required!" });
+  getTopicById: async (req: Request, res: Response) => {
+    const { id } = req.params;
+    if (!id) return res.status(400).json({ message: "Topic id is required" });
 
     try {
-      const studentDocument = await StudentModel.findOne({ MSSV });
+      const topicDocument = await TopicModel.findById(id);
 
-      return res.status(200).json({ data: studentDocument.sentTopic });
+      return res.status(200).json({ data: topicDocument });
     } catch (error) {
       return res.status(500).json({ message: "Internal Error" });
     }
   },
   sendTopic: async (req: Request, res: Response) => {
-    const { MSSV, MSCB } = req.body;
-
-    if (!MSSV || !MSCB)
-      return res.status(400).json({ message: "MSSV or MSCB is required!" });
+    const { id } = req.params;
+    const { topicName, topicEnglishName, majorTag, topicDescription } = req.body;
 
     try {
-      const studentDocument = await StudentModel.findOne({ MSSV });
+      const topicDocument = await TopicModel.findById(id);
 
-      studentDocument.sentTopic = req.body;
-      studentDocument.sentTopic.topicStatus = TopicStatus.Pending;
+      topicDocument.topicStatus = TopicStatus.Pending;
+      topicDocument.topicName = topicName;
+      topicDocument.topicEnglishName = topicEnglishName;
+      topicDocument.majorTag = majorTag;
+      topicDocument.topicDescription = topicDescription;
 
-      await studentDocument.save();
+      await topicDocument.save();
 
-      return res.status(200).json({ data: studentDocument.sentTopic });
+      return res.status(200).json({ data: topicDocument });
     } catch (error) {
       return res.status(500).json({ message: "Internal Error" });
     }
@@ -43,13 +41,11 @@ export const topicController = {
     if (!id) return res.status(400).json({ message: "Topic id is required !" });
 
     try {
-      const studentDocument = await StudentModel.findOne({
-        "sentTopic._id": new ObjectId(id),
-      });
+      const topicDocument = await TopicModel.findById(id);
 
-      studentDocument.sentTopic.topicStatus = TopicStatus.RequestChange;
+      topicDocument.topicStatus = TopicStatus.RequestChange;
 
-      await studentDocument.save();
+      await topicDocument.save();
 
       return res
         .status(200)
@@ -64,17 +60,13 @@ export const topicController = {
     if (!id) return res.status(400).json({ message: "Topic id is required !" });
 
     try {
-      const studentDocument = await StudentModel.findOne({
-        "sentTopic._id": new ObjectId(id),
-      });
+      const topicDocument = await TopicModel.findById(id);
 
-      studentDocument.sentTopic.topicStatus = TopicStatus.Accepted;
+      topicDocument.topicStatus = TopicStatus.Accepted;
 
-      await studentDocument.save();
+      await topicDocument.save();
 
-      return res
-        .status(200)
-        .json({ message: "Accepted topic complete !" });
+      return res.status(200).json({ message: "Accepted topic complete !" });
     } catch (error) {
       return res.status(500).json({ message: "Internal Error" });
     }

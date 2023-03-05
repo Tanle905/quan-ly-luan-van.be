@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import { TeacherModel } from "../model/teacher.model";
+import { TopicModel } from "../model/topic.model";
 import { UserModel } from "../model/user.model";
 
 export const userProfileController = {
@@ -29,6 +30,13 @@ export const userProfileController = {
 
             userClone.teacher = teacherDocument.toObject();
           }
+          if ((userClone as any).topic) {
+            const topicDocument = await TopicModel.findById(
+              (userClone as any).topic
+            );
+
+            userClone["topic"] = topicDocument.toObject();
+          }
 
           return res.status(200).json({ ...userClone, roles: authorities });
         });
@@ -43,7 +51,7 @@ export const userProfileController = {
       UserModel.findById(new ObjectId(userId))
         .select("-password")
         .populate("roles", "-__v")
-        .exec((error, user: any) => {
+        .exec(async (error, user: any) => {
           if (error) return res.status(400).json({ message: "Internal Error" });
           if (!user)
             return res.status(404).json({ message: "User Not found!" });
@@ -51,9 +59,25 @@ export const userProfileController = {
           for (let i = 0; i < user.roles.length; i++) {
             authorities.push(user.roles[i].name);
           }
-          return res
-            .status(200)
-            .json({ ...user.toObject(), roles: authorities });
+
+          const userClone = user.toObject();
+
+          if (userClone.teacher) {
+            const teacherDocument = await TeacherModel.findById(
+              userClone.teacher
+            ).select("MSCB firstName lastName email");
+
+            userClone.teacher = teacherDocument.toObject();
+          }
+          if ((userClone as any).topic) {
+            const topicDocument = await TopicModel.findById(
+              (userClone as any).topic
+            );
+
+            userClone["topic"] = topicDocument.toObject();
+          }
+
+          return res.status(200).json({ ...userClone, roles: authorities });
         });
     } catch (error) {
       return res.status(500).json({ message: "Internal Error" });

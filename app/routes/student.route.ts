@@ -9,7 +9,12 @@ export const studentRouter = Router();
 studentRouter
   .route(STUDENT_ROUTE.BASE)
   .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
-  .post(studentController.post);
+  .post(studentController.getStudent);
+
+studentRouter
+  .route(STUDENT_ROUTE.MSSV)
+  .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
+  .post(studentController.getStudentByMSSV);
 
 studentRouter
   .route(STUDENT_ROUTE.EXPORT)

@@ -25,3 +25,8 @@ requestRouter
   .route(REQUEST_ROUTE.REJECT)
   .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
   .post(requestController.rejectRequest);
+
+requestRouter
+  .route(REQUEST_ROUTE.ID)
+  .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
+  .post(requestController.getRequestyId);
