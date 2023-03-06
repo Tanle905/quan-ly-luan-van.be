@@ -6,6 +6,7 @@ export interface StudentList {
   MSCB: string;
   teacherName: string;
   students: Student[];
+  incompleteStudents: Student[];
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -49,6 +50,6 @@ export interface ThesisDefenseSchedule {
   /**
    * Data for client rendering.
    */
-  calendar: ScheduleCalendar;
-  calculatedCalendar: CalculatedCalendar;
+  calendar?: ScheduleCalendar;
+  calculatedCalendar?: CalculatedCalendar;
 }

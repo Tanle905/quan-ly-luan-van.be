@@ -9,3 +9,7 @@ export enum TopicStatus {
   RequestChange = "requestChange",
   Accepted = "accepted",
 }
+export enum ThesisStatus {
+  IsReadyForThesisDefense = "isReadyForThesisDefense",
+  IsMarkedForIncomplete = "isMarkedForIncomplete",
+}

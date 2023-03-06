@@ -1,4 +1,5 @@
 import mongoose, { Types } from "mongoose";
+import { ThesisStatus } from "../constants and enums/variable";
 import { MatchedTeacher } from "../util/calculation.util";
 import { FreeTime } from "./schedule.interface";
 import { User } from "./user_and_roles.interface";
@@ -14,4 +15,5 @@ export interface Student extends User {
   reportSchedule?: any;
   suitableThesisDefenseTeacherList?: MatchedTeacher[];
   thesisDefenseTime: FreeTime;
+  status?: ThesisStatus;
 }
