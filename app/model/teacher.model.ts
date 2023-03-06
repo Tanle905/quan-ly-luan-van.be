@@ -20,6 +20,10 @@ export const teacherDataSchema: Schema = new mongoose.Schema<Teacher>(
         type: Object,
       },
     ],
+    isImportedStudentListToSystem: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },

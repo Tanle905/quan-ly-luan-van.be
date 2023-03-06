@@ -8,4 +8,5 @@ export interface Teacher extends User {
   majorTags: string[];
   studentList: mongoose.Types.ObjectId[];
   reportSchedule: any[];
+  isImportedStudentListToSystem?: boolean;
 }

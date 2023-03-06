@@ -40,6 +40,7 @@ export const scheduleDataSchema: Schema =
       studentLists: [
         {
           type: studentListDataSchema,
+          default: [],
         },
       ],
     },
@@ -48,4 +49,7 @@ export const scheduleDataSchema: Schema =
     }
   );
 
-export const ScheduleModel = mongoose.model<ThesisDefenseSchedule>("schedule", scheduleDataSchema);
+export const ScheduleModel = mongoose.model<ThesisDefenseSchedule>(
+  "schedule",
+  scheduleDataSchema
+);
