@@ -10,13 +10,21 @@ export const requestDataSchema: Schema = new mongoose.Schema<Request>(
       type: studentDataSchema.add(userDataSchema),
       required: true,
     },
+    isStudentAccepted: {
+      type: Boolean,
+      default: false,
+    },
+    isTeacherAccepted: {
+      type: Boolean,
+      default: false,
+    },
     teacher: {
       type: teacherDataSchema.add(userDataSchema),
       required: true,
     },
     topic: {
       type: Schema.Types.ObjectId,
-    }
+    },
   },
   {
     timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },

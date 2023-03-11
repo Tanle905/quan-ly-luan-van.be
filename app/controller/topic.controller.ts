@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { TopicStatus } from "../constants and enums/variable";
+import { ROLES, TopicStatus } from "../constants and enums/variable";
 import { TopicModel } from "../model/topic.model";
 
 export const topicController = {
@@ -17,12 +17,15 @@ export const topicController = {
   },
   sendTopic: async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { topicName, topicEnglishName, majorTag, topicDescription } = req.body;
+    const { topicName, topicEnglishName, majorTag, topicDescription, role } =
+      req.body;
 
     try {
       const topicDocument = await TopicModel.findById(id);
 
-      topicDocument.topicStatus = TopicStatus.Pending;
+      if (role === ROLES.STUDENT)
+        topicDocument.topicStatus = TopicStatus.Pending;
+
       topicDocument.topicName = topicName;
       topicDocument.topicEnglishName = topicEnglishName;
       topicDocument.majorTag = majorTag;

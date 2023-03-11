@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import mongoose, { SortOrder } from "mongoose";
+import { ROLES } from "../constants and enums/variable";
 import { RequestModel } from "../model/request.model";
 import { StudentModel } from "../model/student.model";
 import { TeacherModel } from "../model/teacher.model";
@@ -70,7 +71,9 @@ export const requestController = {
       );
       const topic = await TopicModel.findById(requestDocument.topic);
 
-      return res.status(200).json({ data: { ...requestDocument.toObject(), topic } });
+      return res
+        .status(200)
+        .json({ data: { ...requestDocument.toObject(), topic } });
     } catch (error: any) {
       return res.status(500).json({ message: "Internal Error" });
     }
@@ -116,12 +119,39 @@ export const requestController = {
     }
   },
   acceptRequest: async (req: Request, res: Response) => {
-    const { id: requestId } = req.body;
-    if (!requestId)
+    const { id: requestId, role } = req.body;
+    if (!requestId || !role)
       return res.status(400).json({ message: "Request id is required" });
 
     try {
       const requestDocument = await RequestModel.findById(requestId);
+
+      if (
+        !(
+          requestDocument.isStudentAccepted && requestDocument.isTeacherAccepted
+        )
+      ) {
+        switch (role) {
+          case ROLES.STUDENT:
+            requestDocument.isStudentAccepted = true;
+            break;
+          case ROLES.TEACHER:
+            requestDocument.isTeacherAccepted = true;
+            break;
+          default:
+            break;
+        }
+
+        await requestDocument.save();
+        if (
+          !(
+            requestDocument.isStudentAccepted &&
+            requestDocument.isTeacherAccepted
+          )
+        )
+          return res.status(200).json("");
+      }
+
       const studentDocument = await StudentModel.findOne({
         MSSV: requestDocument.student.MSSV,
       }).select("-username -password");
