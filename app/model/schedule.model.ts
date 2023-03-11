@@ -1,10 +1,112 @@
 import mongoose, { Schema } from "mongoose";
+import { Slot, ThesisStatus } from "../constants and enums/variable";
 import {
+  BusyTime,
+  ScheduleCalendar,
+  ScheduleEventTime,
   StudentList,
   ThesisDefenseSchedule,
+  ThesisDefenseTime,
 } from "../interface/schedule.interface";
+import { CalendarEventDataSchema } from "./calendar.model";
 import { studentDataSchema } from "./student.model";
 import { userDataSchema } from "./user.model";
+
+export const busyTimeDataSchema: Schema = new mongoose.Schema<BusyTime>({
+  id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    auto: true,
+  },
+  end: {
+    type: Date,
+  },
+  start: {
+    type: Date,
+  },
+  MSCB: {
+    type: String,
+    required: true,
+  },
+  teacherName: {
+    type: String,
+    required: true,
+  },
+  slots: [
+    {
+      type: Schema.Types.Mixed,
+      enum: Slot,
+      required: true,
+    },
+  ],
+}).add(CalendarEventDataSchema);
+
+export const thesisDefenseTimeDataSchema: Schema =
+  new mongoose.Schema<ThesisDefenseTime>({
+    id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      auto: true,
+    },
+    end: {
+      type: Date,
+    },
+    start: {
+      type: Date,
+    },
+    MSCB: {
+      type: String,
+      required: true,
+    },
+    MSSV: {
+      type: String,
+      required: true,
+    },
+    teacherName: {
+      type: String,
+      required: true,
+    },
+    studentName: {
+      type: String,
+      required: true,
+    },
+    topicName: {
+      type: String,
+      required: true,
+    },
+  });
+
+export const scheduleEventTimeDataSchema: Schema =
+  new mongoose.Schema<ScheduleEventTime>({
+    type: {
+      type: Schema.Types.Mixed,
+      required: true,
+      enum: ThesisStatus,
+    },
+    busyTimeData: {
+      type: busyTimeDataSchema,
+    },
+    thesisDefenseTimeData: {
+      type: thesisDefenseTimeDataSchema,
+    },
+  });
+
+export const scheduleCalendarDataSchema = new mongoose.Schema<ScheduleCalendar>(
+  {
+    scheduleEventList: [
+      {
+        type: scheduleEventTimeDataSchema,
+        default: [],
+      },
+    ],
+    reportPrepareWeek: {
+      type: CalendarEventDataSchema,
+    },
+    thesisDefenseWeek: {
+      type: CalendarEventDataSchema,
+    },
+  }
+);
 
 export const studentListDataSchema: Schema = new mongoose.Schema<StudentList>(
   {
@@ -43,6 +145,14 @@ export const scheduleDataSchema: Schema =
           default: [],
         },
       ],
+      calendar: {
+        type: scheduleCalendarDataSchema,
+        default: {
+          scheduleEventList: [],
+          reportPrepareWeek: null,
+          thesisDefenseWeek: null,
+        },
+      },
     },
     {
       timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },

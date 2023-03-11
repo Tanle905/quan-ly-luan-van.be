@@ -58,6 +58,11 @@ export const TAG_ROUTE = {
 export const THESIS_DEFENSE_SCHEDULE_ROUTE = {
   BASE: "/",
   STUDENT_LIST: "/student-list",
+  CALENDAR: {
+    BASE: "/calendar",
+    BUSY_LIST: "/busy-time",
+    THESIS_DEFENSE_TIME: "/thesis-defense-time",
+  },
 };
 //Endpoints
 export const API_ENDPOINT = "/api";

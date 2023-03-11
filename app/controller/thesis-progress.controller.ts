@@ -70,7 +70,6 @@ export const thesisProgressController = {
       });
       const transformedEventList = thesisProgressDocument.events.map(
         (event) => {
-          console.log(event.id, req.body.id);
           if (event.id.toString() === req.body.id)
             return { ...event, ...req.body };
           return event;

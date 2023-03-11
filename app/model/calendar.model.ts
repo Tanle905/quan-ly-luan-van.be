@@ -7,23 +7,22 @@ export const CalendarEventDataSchema = new mongoose.Schema<CalendarEvent>({
     required: true,
     auto: true,
   },
-  backgroundColor: { type: String, default: "#ad9734" },
-  borderColor: { type: String, default: "#ad9734" },
-  editable: { type: Boolean, default: false },
   end: {
     type: Date,
   },
   start: {
     type: Date,
   },
+  backgroundColor: { type: String, default: "#ad9734" },
+  borderColor: { type: String, default: "#ad9734" },
+  editable: { type: Boolean, default: false },
   textColor: { type: String, default: "#fffffff" },
   allDay: {
     type: Boolean,
     default: true,
   },
-  title: { type: String, required: true },
+  title: { type: String },
   description: {
     type: String,
-    required: true,
   },
 });

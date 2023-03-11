@@ -6,25 +6,53 @@ export const thesisDefenseScheduleController = {
   studentList: {
     import: async (req: Request, res: Response) => {
       const { data } = req.body;
-      const scheduleDocument = await ScheduleModel.findOne({});
 
-      //If schedule is not yet created, create a new one
-      if (!scheduleDocument) {
-        const newSchedule = new ScheduleModel();
+      try {
+        const scheduleDocument = await ScheduleModel.findOne({});
 
-        newSchedule.studentLists.push(data);
-        await newSchedule.save();
-      } else {
-        scheduleDocument.studentLists.push(data);
-        await scheduleDocument.save();
+        //If schedule is not yet created, create a new one
+        if (!scheduleDocument) {
+          const newSchedule = new ScheduleModel();
+
+          newSchedule.studentLists.push(data);
+          await newSchedule.save();
+        } else {
+          scheduleDocument.studentLists.push(data);
+          await scheduleDocument.save();
+        }
+        const teacherDocument = await TeacherModel.findOne({ MSCB: data.MSCB });
+
+        teacherDocument.isImportedStudentListToSystem = true;
+
+        await teacherDocument.save();
+
+        return res.status(200).json({ message: "Add student list completed." });
+      } catch (error: any) {
+        return res.status(500).json({ message: "Internal Error" });
       }
-      const teacherDocument = await TeacherModel.findOne({ MSCB: data.MSCB });
+    },
+  },
+  calendar: {
+    busyTime: {
+      import: async (req: Request, res: Response) => {
+        const { type, busyTimeData } = req.body;
 
-      teacherDocument.isImportedStudentListToSystem = true;
+        try {
+          const scheduleDocument = await ScheduleModel.findOne({});
 
-      await teacherDocument.save();
+          scheduleDocument.calendar.scheduleEventList.push({
+            type,
+            busyTimeData,
+          });
 
-      return res.status(200).json({ message: "" });
+          await scheduleDocument.save();
+
+          return res.status(200).json({ message: "Add busy time complete." });
+        } catch (error: any) {
+          console.log(error);
+          return res.status(500).json({ message: "Internal Error" });
+        }
+      },
     },
   },
 };
