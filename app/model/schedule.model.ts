@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { Slot, ThesisStatus } from "../constants and enums/variable";
+import { ScheduleEventType, Slot } from "../constants and enums/variable";
 import {
   BusyTime,
   ScheduleCalendar,
@@ -81,7 +81,7 @@ export const scheduleEventTimeDataSchema: Schema =
     type: {
       type: Schema.Types.Mixed,
       required: true,
-      enum: ThesisStatus,
+      enum: ScheduleEventType,
     },
     busyTimeData: {
       type: busyTimeDataSchema,

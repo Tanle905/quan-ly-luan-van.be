@@ -1,4 +1,4 @@
-import { Slot, ThesisStatus } from "../constants and enums/variable";
+import { ScheduleEventType, Slot } from "../constants and enums/variable";
 import { CalendarEvent } from "./calendar.interface";
 import { Student } from "./student.interface";
 
@@ -17,7 +17,7 @@ export interface ThesisDefenseTime extends CalendarEvent {
 }
 
 export interface ScheduleEventTime {
-  type: ThesisStatus;
+  type: ScheduleEventType;
   busyTimeData?: BusyTime;
   thesisDefenseTimeData?: ThesisDefenseTime;
 }

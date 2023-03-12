@@ -12,9 +12,21 @@ thesisDefenseScheduleRouter
   .post(thesisDefenseScheduleController.studentList.import);
 
 thesisDefenseScheduleRouter
+  .route(THESIS_DEFENSE_SCHEDULE_ROUTE.CALENDAR.BASE)
+  .get(thesisDefenseScheduleController.calendar.getCalendarEvents);
+
+thesisDefenseScheduleRouter
+  .route(
+    THESIS_DEFENSE_SCHEDULE_ROUTE.CALENDAR.BASE +
+      THESIS_DEFENSE_SCHEDULE_ROUTE.CALENDAR.BUSY_LIST
+  )
+  .post(thesisDefenseScheduleController.calendar.busyTime.delete);
+
+thesisDefenseScheduleRouter
   .route(
     THESIS_DEFENSE_SCHEDULE_ROUTE.CALENDAR.BASE +
       THESIS_DEFENSE_SCHEDULE_ROUTE.CALENDAR.BUSY_LIST +
       COMMON_ROUTE.IMPORT
   )
-  .post(thesisDefenseScheduleController.calendar.busyTime.import);
+  .post(thesisDefenseScheduleController.calendar.busyTime.import)
+  .put(thesisDefenseScheduleController.calendar.busyTime.edit);

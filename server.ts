@@ -29,6 +29,8 @@ import { topicRouter } from "./app/routes/topic.route";
 import { tagRouter } from "./app/routes/tag.route";
 import { studentManagementRouter } from "./app/routes/student-management.route";
 import { thesisDefenseScheduleRouter } from "./app/routes/thesis-defense-schedule.route";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 
 //Config
 const app: Application = express();
@@ -42,6 +44,7 @@ app.use(
 );
 app.use(cors());
 app.use(express.json());
+dayjs.extend(utc);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
