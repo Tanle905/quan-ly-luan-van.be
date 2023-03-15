@@ -74,7 +74,14 @@ export const thesisDefenseTimeDataSchema: Schema =
       type: String,
       required: true,
     },
-  });
+    slots: [
+      {
+        type: Schema.Types.Mixed,
+        enum: Slot,
+        required: true,
+      },
+    ],
+  }).add(CalendarEventDataSchema);
 
 export const scheduleEventTimeDataSchema: Schema =
   new mongoose.Schema<ScheduleEventTime>({
@@ -82,6 +89,10 @@ export const scheduleEventTimeDataSchema: Schema =
       type: Schema.Types.Mixed,
       required: true,
       enum: ScheduleEventType,
+    },
+    editable: {
+      type: Boolean,
+      default: false,
     },
     busyTimeData: {
       type: busyTimeDataSchema,
@@ -103,7 +114,7 @@ export const scheduleCalendarDataSchema = new mongoose.Schema<ScheduleCalendar>(
       type: CalendarEventDataSchema,
     },
     thesisDefenseWeek: {
-      type: CalendarEventDataSchema,
+      type: Date,
     },
   }
 );

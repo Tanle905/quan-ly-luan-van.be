@@ -14,10 +14,12 @@ export interface ThesisDefenseTime extends CalendarEvent {
   studentName: string;
   teacherName: string;
   topicName: string;
+  slots: Slot[];
 }
 
 export interface ScheduleEventTime {
   type: ScheduleEventType;
+  editable?: boolean;
   busyTimeData?: BusyTime;
   thesisDefenseTimeData?: ThesisDefenseTime;
 }
@@ -25,7 +27,7 @@ export interface ScheduleEventTime {
 export interface ScheduleCalendar {
   scheduleEventList: ScheduleEventTime[];
   reportPrepareWeek: CalendarEvent;
-  thesisDefenseWeek: CalendarEvent;
+  thesisDefenseWeek: Date;
 }
 
 export interface ThesisDefenseSchedule {

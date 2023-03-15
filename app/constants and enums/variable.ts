@@ -29,3 +29,4 @@ export enum Slot {
   Slot9 = 9, //16h-17h
   Slot10 = 10, //17h-18h
 }
+export const SLOTS: Slot[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];

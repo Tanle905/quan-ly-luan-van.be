@@ -13,7 +13,8 @@ thesisDefenseScheduleRouter
 
 thesisDefenseScheduleRouter
   .route(THESIS_DEFENSE_SCHEDULE_ROUTE.CALENDAR.BASE)
-  .get(thesisDefenseScheduleController.calendar.getCalendarEvents);
+  .get(thesisDefenseScheduleController.calendar.autoSchedule)
+  .post(thesisDefenseScheduleController.calendar.getCalendarEvents);
 
 thesisDefenseScheduleRouter
   .route(
