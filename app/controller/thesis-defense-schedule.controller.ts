@@ -1,11 +1,16 @@
 import dayjs from "dayjs";
 import { Request, Response } from "express";
+import { ObjectId } from "mongodb";
+import mongoose from "mongoose";
 import {
   ROLES,
   ScheduleEventType,
   SLOTS,
 } from "../constants and enums/variable";
-import { ScheduleEventTime } from "../interface/schedule.interface";
+import {
+  ScheduleEventTime,
+  ThesisDefenseTime,
+} from "../interface/schedule.interface";
 import { ScheduleModel } from "../model/schedule.model";
 import { TeacherModel } from "../model/teacher.model";
 import { TopicModel } from "../model/topic.model";
@@ -176,7 +181,6 @@ export const thesisDefenseScheduleController = {
       const scheduleDocument = await ScheduleModel.findOne({});
 
       const studentLists = scheduleDocument.studentLists;
-      const eventList = scheduleDocument.calendar.scheduleEventList;
       const thesisDefenseStartDate = dayjs(
         scheduleDocument.calendar.thesisDefenseWeek
       )
@@ -185,20 +189,20 @@ export const thesisDefenseScheduleController = {
 
       studentLists.forEach((list) => {
         //Check for student list owner's free slot
-        if (list.MSCB === "CB22222") return;
-        const currentTeacherBusyTimeList = eventList.filter((event) =>
-          [
-            event?.busyTimeData?.MSCB,
-            event?.thesisDefenseTimeData?.MSCB,
-          ].includes(list.MSCB)
-        );
+        const currentTeacherBusyTimeList =
+          scheduleDocument.calendar.scheduleEventList.filter(
+            (event) =>
+              [event?.busyTimeData?.MSCB].includes(list.MSCB) ||
+              event?.thesisDefenseTimeData?.MSCB.includes(list.MSCB)
+          );
 
         list.students.map(async (student, index) => {
-          //TODO: change later
-          if (index > 0) return;
-          //TODO: change later
-          for (let index = 0; index < 1; index++) {
-            const currentSelectedDate = thesisDefenseStartDate
+          for (let index = 0; index < 6; index++) {
+            const currentSelectedDate = thesisDefenseStartDate.add(
+              index,
+              "day"
+            );
+            const currentSelectedDateFormated = thesisDefenseStartDate
               .add(index, "day")
               .format("DD-MM-YYYY");
             const todayBusyTime = currentTeacherBusyTimeList.find((event) =>
@@ -213,14 +217,14 @@ export const thesisDefenseScheduleController = {
                     .utcOffset(0)
                     .startOf("day")
                     .format("DD-MM-YYYY"),
-              ].includes(currentSelectedDate)
+              ].includes(currentSelectedDateFormated)
             );
             const freeSlotsCurSelectedDate = todayBusyTime
               ? SLOTS.filter(
                   (slot) =>
                     !(
                       todayBusyTime?.busyTimeData?.slots?.includes(slot) ||
-                      todayBusyTime?.thesisDefenseTimeData?.slots.includes(slot)
+                      todayBusyTime?.thesisDefenseTimeData?.slots === slot
                     )
                 )
               : SLOTS;
@@ -250,10 +254,15 @@ export const thesisDefenseScheduleController = {
               ])
             ).filter((teacher) => teacher.count !== 0);
             //Loop to find if other teachers have free slots that match current slots
-            freeSlotsCurSelectedDate.map((slot) => {
-              const freeTeacherList = matchMajorTeacherList.reduce(
+            for (
+              let index = 0;
+              index < freeSlotsCurSelectedDate.length;
+              index++
+            ) {
+              const slot = freeSlotsCurSelectedDate[index];
+              const freeTeacherList: any[] = matchMajorTeacherList.reduce(
                 (prevTeacher, curTeacher) => {
-                  return eventList.find(
+                  return scheduleDocument.calendar.scheduleEventList.find(
                     (event) =>
                       [
                         event?.busyTimeData?.start &&
@@ -266,13 +275,13 @@ export const thesisDefenseScheduleController = {
                             .utcOffset(0)
                             .startOf("day")
                             .format("DD-MM-YYYY"),
-                      ].includes(currentSelectedDate) &&
-                      [
-                        event?.busyTimeData?.MSCB,
-                        event?.thesisDefenseTimeData?.MSCB,
-                      ].includes(curTeacher.MSCB) &&
+                      ].includes(currentSelectedDateFormated) &&
+                      ([event?.busyTimeData?.MSCB].includes(curTeacher.MSCB) ||
+                        event?.thesisDefenseTimeData?.MSCB.includes(
+                          curTeacher.MSCB
+                        )) &&
                       (event?.busyTimeData?.slots?.includes(slot) ||
-                        event?.thesisDefenseTimeData?.slots.includes(slot))
+                        event?.thesisDefenseTimeData?.slots === slot)
                   )
                     ? prevTeacher
                     : [...prevTeacher, curTeacher.MSCB];
@@ -280,8 +289,26 @@ export const thesisDefenseScheduleController = {
                 []
               );
 
-              console.log(freeTeacherList, slot, currentSelectedDate);
-            });
+              if (freeTeacherList.length >= 3) {
+                const thesisDefenseTime: ThesisDefenseTime = {
+                  start: dayjs(currentSelectedDate).toDate(),
+                  MSCB: freeTeacherList,
+                  MSSV: student.MSSV,
+                  studentName: `${student.lastName} ${student.firstName}`,
+                  teacherName: "",
+                  topicName: topicDocument.topicName,
+                  slots: slot,
+                  id: new mongoose.Types.ObjectId(),
+                };
+                console.log(freeTeacherList, slot, currentSelectedDateFormated);
+                scheduleDocument.calendar.scheduleEventList.push({
+                  type: ScheduleEventType.ThesisDefenseEvent,
+                  thesisDefenseTimeData: thesisDefenseTime,
+                });
+
+                return;
+              }
+            }
           }
         });
       });

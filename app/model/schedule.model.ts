@@ -54,10 +54,12 @@ export const thesisDefenseTimeDataSchema: Schema =
     start: {
       type: Date,
     },
-    MSCB: {
-      type: String,
-      required: true,
-    },
+    MSCB: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
     MSSV: {
       type: String,
       required: true,
@@ -74,13 +76,11 @@ export const thesisDefenseTimeDataSchema: Schema =
       type: String,
       required: true,
     },
-    slots: [
-      {
-        type: Schema.Types.Mixed,
-        enum: Slot,
-        required: true,
-      },
-    ],
+    slots: {
+      type: Schema.Types.Mixed,
+      enum: Slot,
+      required: true,
+    },
   }).add(CalendarEventDataSchema);
 
 export const scheduleEventTimeDataSchema: Schema =
