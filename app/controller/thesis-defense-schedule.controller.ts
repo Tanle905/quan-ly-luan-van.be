@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import {
   ROLES,
   ScheduleEventType,
+  Slot,
   SLOTS,
 } from "../constants and enums/variable";
 import {
@@ -179,7 +180,6 @@ export const thesisDefenseScheduleController = {
     },
     autoSchedule: async (req: Request, res: Response) => {
       const scheduleDocument = await ScheduleModel.findOne({});
-
       const studentLists = scheduleDocument.studentLists;
       const thesisDefenseStartDate = dayjs(
         scheduleDocument.calendar.thesisDefenseWeek
@@ -190,10 +190,8 @@ export const thesisDefenseScheduleController = {
       studentLists.forEach((list) => {
         //Check for student list owner's free slot
         const currentTeacherBusyTimeList =
-          scheduleDocument.calendar.scheduleEventList.filter(
-            (event) =>
-              [event?.busyTimeData?.MSCB].includes(list.MSCB) ||
-              event?.thesisDefenseTimeData?.MSCB.includes(list.MSCB)
+          scheduleDocument.calendar.scheduleEventList.filter((event) =>
+            isCurEventBelongToCurTeacher(event, list.MSCB)
           );
 
         list.students.map(async (student, index) => {
@@ -202,29 +200,21 @@ export const thesisDefenseScheduleController = {
               index,
               "day"
             );
-            const currentSelectedDateFormated = thesisDefenseStartDate
-              .add(index, "day")
-              .format("DD-MM-YYYY");
-            const todayBusyTime = currentTeacherBusyTimeList.find((event) =>
-              [
-                event?.busyTimeData?.start &&
-                  dayjs(event?.busyTimeData?.start)
-                    .utcOffset(0)
-                    .startOf("day")
-                    .format("DD-MM-YYYY"),
-                event?.thesisDefenseTimeData?.start &&
-                  dayjs(event?.thesisDefenseTimeData?.start)
-                    .utcOffset(0)
-                    .startOf("day")
-                    .format("DD-MM-YYYY"),
-              ].includes(currentSelectedDateFormated)
+            const currentSelectedDateFormated =
+              currentSelectedDate.format("DD-MM-YYYY");
+            const isSelectedDateHaveBusyTime = currentTeacherBusyTimeList.find(
+              (event) =>
+                isCurEventDateMatchCurSelectedDate(
+                  event,
+                  currentSelectedDateFormated
+                )
             );
-            const freeSlotsCurSelectedDate = todayBusyTime
+            const freeSlotsCurSelectedDate = isSelectedDateHaveBusyTime
               ? SLOTS.filter(
                   (slot) =>
-                    !(
-                      todayBusyTime?.busyTimeData?.slots?.includes(slot) ||
-                      todayBusyTime?.thesisDefenseTimeData?.slots === slot
+                    !isCurDateSlotsListContainCurSlot(
+                      isSelectedDateHaveBusyTime,
+                      slot
                     )
                 )
               : SLOTS;
@@ -264,24 +254,12 @@ export const thesisDefenseScheduleController = {
                 (prevTeacher, curTeacher) => {
                   return scheduleDocument.calendar.scheduleEventList.find(
                     (event) =>
-                      [
-                        event?.busyTimeData?.start &&
-                          dayjs(event?.busyTimeData?.start)
-                            .utcOffset(0)
-                            .startOf("day")
-                            .format("DD-MM-YYYY"),
-                        event?.thesisDefenseTimeData?.start &&
-                          dayjs(event?.thesisDefenseTimeData?.start)
-                            .utcOffset(0)
-                            .startOf("day")
-                            .format("DD-MM-YYYY"),
-                      ].includes(currentSelectedDateFormated) &&
-                      ([event?.busyTimeData?.MSCB].includes(curTeacher.MSCB) ||
-                        event?.thesisDefenseTimeData?.MSCB.includes(
-                          curTeacher.MSCB
-                        )) &&
-                      (event?.busyTimeData?.slots?.includes(slot) ||
-                        event?.thesisDefenseTimeData?.slots === slot)
+                      isCurEventDateMatchCurSelectedDate(
+                        event,
+                        currentSelectedDateFormated
+                      ) &&
+                      isCurEventBelongToCurTeacher(event, curTeacher.MSCB) &&
+                      isCurDateSlotsListContainCurSlot(event, slot)
                   )
                     ? prevTeacher
                     : [...prevTeacher, curTeacher.MSCB];
@@ -300,7 +278,12 @@ export const thesisDefenseScheduleController = {
                   slots: slot,
                   id: new mongoose.Types.ObjectId(),
                 };
-                console.log(freeTeacherList, slot, currentSelectedDateFormated);
+                console.log(
+                  student.MSSV,
+                  freeTeacherList,
+                  slot,
+                  currentSelectedDateFormated
+                );
                 scheduleDocument.calendar.scheduleEventList.push({
                   type: ScheduleEventType.ThesisDefenseEvent,
                   thesisDefenseTimeData: thesisDefenseTime,
@@ -315,3 +298,36 @@ export const thesisDefenseScheduleController = {
     },
   },
 };
+
+function formatStandardDate(date: any) {
+  return dayjs(date).utcOffset(0).startOf("day").format("DD-MM-YYYY");
+}
+
+function isCurEventDateMatchCurSelectedDate(
+  event: ScheduleEventTime,
+  currentSelectedDateFormated: string
+) {
+  return [
+    event?.busyTimeData?.start &&
+      formatStandardDate(event?.busyTimeData?.start),
+    event?.thesisDefenseTimeData?.start &&
+      formatStandardDate(event?.thesisDefenseTimeData?.start),
+  ].includes(currentSelectedDateFormated);
+}
+
+function isCurDateSlotsListContainCurSlot(
+  todayBusyTime: ScheduleEventTime,
+  slot: Slot
+) {
+  return (
+    todayBusyTime?.busyTimeData?.slots?.includes(slot) ||
+    todayBusyTime?.thesisDefenseTimeData?.slots === slot
+  );
+}
+
+function isCurEventBelongToCurTeacher(event: ScheduleEventTime, MSCB: string) {
+  return (
+    [event?.busyTimeData?.MSCB].includes(MSCB) ||
+    event?.thesisDefenseTimeData?.MSCB.includes(MSCB)
+  );
+}
