@@ -3,6 +3,7 @@ import { cloneDeep } from "lodash";
 import { ObjectId } from "mongodb";
 import { SortOrder } from "mongoose";
 import { StudentModel } from "../model/student.model";
+import { TeacherModel } from "../model/teacher.model";
 import { TopicModel } from "../model/topic.model";
 
 export const studentController = {
@@ -54,16 +55,50 @@ export const studentController = {
     const { MSSV } = req.params;
 
     try {
-      const studentDocuments = await StudentModel.findOne({
+      const studentDocument = await StudentModel.findOne({
         teacher: new ObjectId(userId),
         MSSV,
       }).select("-password");
-      const topic = await TopicModel.findById(studentDocuments.topic);
+      const topic = await TopicModel.findById(studentDocument.topic);
 
       return res.status(200).json({
-        data: { ...studentDocuments.toObject(), topic },
+        data: { ...studentDocument.toObject(), topic },
       });
     } catch (error) {
+      return res.status(500).json({ message: "Internal Error" });
+    }
+  },
+  deleteStudentByMSSV: async (req: Request, res: Response) => {
+    const { userId } = res.locals;
+    const { MSSV } = req.params;
+
+    try {
+      const teachertDocument = await TeacherModel.findOne({
+        _id: new ObjectId(userId),
+      }).select("-password");
+      const studentDocument = await StudentModel.findOne({
+        teacher: new ObjectId(userId),
+        MSSV,
+      }).select("-password");
+      const filteredStudentList = teachertDocument.studentList.filter(
+        (student) => student.toString() !== studentDocument._id.toString()
+      );
+
+      teachertDocument.studentList = filteredStudentList;
+      studentDocument.teacher = null;
+      studentDocument.topic = null;
+
+      await Promise.all([
+        teachertDocument.save(),
+        studentDocument.save(),
+        TopicModel.findOneAndDelete({ _id: studentDocument.topic }),
+      ]);
+
+      return res.status(200).json({
+        message: "Remove student from list completed.",
+      });
+    } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: "Internal Error" });
     }
   },

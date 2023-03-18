@@ -14,7 +14,8 @@ studentRouter
 studentRouter
   .route(STUDENT_ROUTE.MSSV)
   .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
-  .post(studentController.getStudentByMSSV);
+  .post(studentController.getStudentByMSSV)
+  .delete(studentController.deleteStudentByMSSV);
 
 studentRouter
   .route(STUDENT_ROUTE.EXPORT)

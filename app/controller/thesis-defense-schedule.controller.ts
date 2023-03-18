@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 import { Request, Response } from "express";
-import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 import {
   ROLES,
@@ -82,6 +81,9 @@ export const thesisDefenseScheduleController = {
           });
 
           return res.status(200).json({ data: mappedBusyTimeList });
+        }
+        if (role === ROLES.STUDENT) {
+          return res.status(200).json({ data: [] });
         }
         if (role === ROLES.ADMIN) {
           const mappedBusyTimeList =
@@ -187,114 +189,142 @@ export const thesisDefenseScheduleController = {
         .utcOffset(0)
         .startOf("day");
 
-      studentLists.forEach((list) => {
-        //Check for student list owner's free slot
-        const currentTeacherBusyTimeList =
-          scheduleDocument.calendar.scheduleEventList.filter((event) =>
-            isCurEventBelongToCurTeacher(event, list.MSCB)
-          );
+      const mappedStudentList = await Promise.all(
+        studentLists.map(async (list) => {
+          //Check for student list owner's free slot
+          const currentTeacherBusyTimeList =
+            scheduleDocument.calendar.scheduleEventList.filter((event) =>
+              isCurEventBelongToCurTeacher(event, list.MSCB)
+            );
 
-        list.students.map(async (student, index) => {
-          for (let index = 0; index < 6; index++) {
-            const currentSelectedDate = thesisDefenseStartDate.add(
-              index,
-              "day"
-            );
-            const currentSelectedDateFormated =
-              currentSelectedDate.format("DD-MM-YYYY");
-            const isSelectedDateHaveBusyTime = currentTeacherBusyTimeList.find(
-              (event) =>
-                isCurEventDateMatchCurSelectedDate(
-                  event,
-                  currentSelectedDateFormated
-                )
-            );
-            const freeSlotsCurSelectedDate = isSelectedDateHaveBusyTime
-              ? SLOTS.filter(
-                  (slot) =>
-                    !isCurDateSlotsListContainCurSlot(
-                      isSelectedDateHaveBusyTime,
-                      slot
+          const mappedStudents = await Promise.all(
+            list.students.map(async (student, index) => {
+              if (student.isHaveThesisSchedule) return student;
+
+              let isHaveThesisSchedule: Boolean = false;
+
+              for (let index = 0; index < 6; index++) {
+                const currentSelectedDate = thesisDefenseStartDate.add(
+                  index,
+                  "day"
+                );
+                const currentSelectedDateFormated =
+                  currentSelectedDate.format("DD-MM-YYYY");
+                const isSelectedDateHaveBusyTime =
+                  currentTeacherBusyTimeList.find((event) =>
+                    isCurEventDateMatchCurSelectedDate(
+                      event,
+                      currentSelectedDateFormated
                     )
-                )
-              : SLOTS;
-            //if student list's owner dont have free slot in selected day, return.
-            if (freeSlotsCurSelectedDate.length === 0) return;
-            const topicDocument = await TopicModel.findById(student.topic);
-            //Search for teacher that have matching major with topic
-            const matchMajorTeacherList = (
-              await TeacherModel.aggregate([
-                {
-                  $project: {
-                    MSCB: 1,
-                    firstName: 1,
-                    lastName: 1,
-                    majorTags: 1,
-                    count: {
-                      $size: {
-                        $filter: {
-                          input: "$majorTags",
-                          as: "tag",
-                          cond: { $eq: ["$$tag", topicDocument.majorTag] },
+                  );
+                const freeSlotsCurSelectedDate = isSelectedDateHaveBusyTime
+                  ? SLOTS.filter(
+                      (slot) =>
+                        !isCurDateSlotsListContainCurSlot(
+                          isSelectedDateHaveBusyTime,
+                          slot
+                        )
+                    )
+                  : SLOTS;
+                //if student list's owner dont have free slot in selected day, return.
+                if (freeSlotsCurSelectedDate.length === 0) return;
+                const topicDocument = await TopicModel.findById(student.topic);
+                //Search for teacher that have matching major with topic
+                const matchMajorTeacherList = (
+                  await TeacherModel.aggregate([
+                    {
+                      $project: {
+                        MSCB: 1,
+                        firstName: 1,
+                        lastName: 1,
+                        majorTags: 1,
+                        count: {
+                          $size: {
+                            $filter: {
+                              input: "$majorTags",
+                              as: "tag",
+                              cond: { $eq: ["$$tag", topicDocument.majorTag] },
+                            },
+                          },
                         },
                       },
                     },
-                  },
-                },
-              ])
-            ).filter((teacher) => teacher.count !== 0);
-            //Loop to find if other teachers have free slots that match current slots
-            for (
-              let index = 0;
-              index < freeSlotsCurSelectedDate.length;
-              index++
-            ) {
-              const slot = freeSlotsCurSelectedDate[index];
-              const freeTeacherList: any[] = matchMajorTeacherList.reduce(
-                (prevTeacher, curTeacher) => {
-                  return scheduleDocument.calendar.scheduleEventList.find(
-                    (event) =>
-                      isCurEventDateMatchCurSelectedDate(
-                        event,
-                        currentSelectedDateFormated
-                      ) &&
-                      isCurEventBelongToCurTeacher(event, curTeacher.MSCB) &&
-                      isCurDateSlotsListContainCurSlot(event, slot)
-                  )
-                    ? prevTeacher
-                    : [...prevTeacher, curTeacher.MSCB];
-                },
-                []
-              );
-
-              if (freeTeacherList.length >= 3) {
-                const thesisDefenseTime: ThesisDefenseTime = {
-                  start: dayjs(currentSelectedDate).toDate(),
-                  MSCB: freeTeacherList,
-                  MSSV: student.MSSV,
-                  studentName: `${student.lastName} ${student.firstName}`,
-                  teacherName: "",
-                  topicName: topicDocument.topicName,
-                  slots: slot,
-                  id: new mongoose.Types.ObjectId(),
-                };
-                console.log(
-                  student.MSSV,
-                  freeTeacherList,
-                  slot,
-                  currentSelectedDateFormated
+                  ])
+                ).filter(
+                  (teacher) => teacher.count !== 0 && teacher.MSCB !== list.MSCB
                 );
-                scheduleDocument.calendar.scheduleEventList.push({
-                  type: ScheduleEventType.ThesisDefenseEvent,
-                  thesisDefenseTimeData: thesisDefenseTime,
-                });
+                //Loop to find if other teachers have free slots that match current slots
+                for (
+                  let index = 0;
+                  index < freeSlotsCurSelectedDate.length;
+                  index++
+                ) {
+                  const slot = freeSlotsCurSelectedDate[index];
+                  const freeTeacherList: any[] = matchMajorTeacherList.reduce(
+                    (prevTeacher, curTeacher) =>
+                      prevTeacher.length >= 2 ||
+                      scheduleDocument.calendar.scheduleEventList.find(
+                        (event) =>
+                          isCurEventDateMatchCurSelectedDate(
+                            event,
+                            currentSelectedDateFormated
+                          ) &&
+                          isCurEventBelongToCurTeacher(
+                            event,
+                            curTeacher.MSCB
+                          ) &&
+                          isCurDateSlotsListContainCurSlot(event, slot)
+                      )
+                        ? prevTeacher
+                        : [...prevTeacher, curTeacher.MSCB],
+                    []
+                  );
 
-                return;
+                  if (freeTeacherList.length >= 2) {
+                    freeTeacherList.push(list.MSCB);
+                    const thesisDefenseTime: ThesisDefenseTime = {
+                      start: dayjs(currentSelectedDate).toDate(),
+                      MSCB: freeTeacherList,
+                      MSSV: student.MSSV,
+                      studentName: `${student.lastName} ${student.firstName}`,
+                      teacherName: "",
+                      topicName: topicDocument.topicName,
+                      slots: slot,
+                      id: new mongoose.Types.ObjectId(),
+                    };
+                    isHaveThesisSchedule = true;
+                    console.log(
+                      student.MSSV,
+                      freeTeacherList,
+                      slot,
+                      currentSelectedDateFormated,
+                      isHaveThesisSchedule
+                    );
+                    scheduleDocument.calendar.scheduleEventList.push({
+                      type: ScheduleEventType.ThesisDefenseEvent,
+                      thesisDefenseTimeData: thesisDefenseTime,
+                    });
+                    console.log(student.MSSV, isHaveThesisSchedule);
+
+                    return {
+                      ...(student as any).toObject(),
+                      isHaveThesisSchedule,
+                    };
+                  }
+                }
               }
-            }
-          }
-        });
-      });
+              console.log(student.MSSV, isHaveThesisSchedule);
+              return { ...(student as any).toObject(), isHaveThesisSchedule };
+            })
+          );
+
+          return { ...(list as any).toObject(), students: mappedStudents };
+        })
+      );
+
+      scheduleDocument.studentLists = mappedStudentList;
+
+      return res.status(200).json({ data: scheduleDocument.toObject() });
     },
   },
 };

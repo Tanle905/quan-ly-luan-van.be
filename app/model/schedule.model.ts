@@ -131,7 +131,9 @@ export const studentListDataSchema: Schema = new mongoose.Schema<StudentList>(
     },
     students: [
       {
-        type: studentDataSchema.add(userDataSchema),
+        type: studentDataSchema
+          .add(userDataSchema)
+          .add({ isHaveThesisSchedule: Boolean }),
         default: [],
       },
     ],

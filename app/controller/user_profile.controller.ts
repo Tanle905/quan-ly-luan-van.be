@@ -26,7 +26,9 @@ export const userProfileController = {
           if (userClone.teacher) {
             const teacherDocument = await TeacherModel.findById(
               userClone.teacher
-            ).select("MSCB firstName lastName email");
+            ).select(
+              "MSCB firstName lastName email phoneNumber roles majorTags"
+            );
 
             userClone.teacher = teacherDocument.toObject();
           }
