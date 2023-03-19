@@ -41,7 +41,7 @@ export interface ThesisDefenseSchedule {
 export interface StudentList {
   MSCB: string;
   teacherName: string;
-  students: Student[];
+  students: (Student & { isHaveThesisSchedule?: boolean })[];
   incompleteStudents: Student[];
   createdAt?: Date;
   updatedAt?: Date;

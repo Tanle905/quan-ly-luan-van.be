@@ -42,7 +42,7 @@ export const authController = {
       if ((userClone as any).teacher) {
         const teacherDocument = await TeacherModel.findById(
           (userClone as any).teacher
-        ).select("MSCB firstName lastName email");
+        ).select("MSCB firstName lastName email phoneNumber roles majorTags");
 
         userClone["teacher"] = teacherDocument.toObject();
       }
