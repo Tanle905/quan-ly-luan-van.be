@@ -33,6 +33,12 @@ export const topicDataSchema = new mongoose.Schema<Topic>(
     majorTag: {
       type: String,
     },
+    history: [
+      {
+        type: { updatedAt: Date, updatedBy: String },
+        default: [],
+      },
+    ],
   },
   {
     timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },

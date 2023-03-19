@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { Request, Response } from "express";
 import { ROLES, TopicStatus } from "../constants and enums/variable";
 import { TopicModel } from "../model/topic.model";
@@ -15,9 +16,9 @@ export const topicController = {
       return res.status(500).json({ message: "Internal Error" });
     }
   },
-  sendTopic: async (req: Request, res: Response) => {
+  editTopic: async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { topicName, topicEnglishName, majorTag, topicDescription, role } =
+    const { topicName, topicEnglishName, majorTag, topicDescription, role, updatedBy } =
       req.body;
 
     try {
@@ -30,6 +31,10 @@ export const topicController = {
       topicDocument.topicEnglishName = topicEnglishName;
       topicDocument.majorTag = majorTag;
       topicDocument.topicDescription = topicDescription;
+      topicDocument.history.unshift({
+        updatedAt: dayjs().toDate(),
+        updatedBy: updatedBy ?? "No data",
+      });
 
       await topicDocument.save();
 

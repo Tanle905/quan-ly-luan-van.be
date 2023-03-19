@@ -1,6 +1,5 @@
 import mongoose, { Schema } from "mongoose";
 import { Student } from "../interface/student.interface";
-import { topicDataSchema } from "./topic.model";
 import { UserModel } from "./user.model";
 
 export const studentDataSchema: Schema = new mongoose.Schema<Student>(
