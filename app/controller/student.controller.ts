@@ -58,11 +58,18 @@ export const studentController = {
       const studentDocument = await StudentModel.findOne({
         teacher: new ObjectId(userId),
         MSSV,
-      }).select("-password");
+      })
+        .select("-password")
+        .populate("roles", "-__v");
       const topic = await TopicModel.findById(studentDocument.topic);
+      const authorities = [];
+
+      for (let i = 0; i < studentDocument.roles.length; i++) {
+        authorities.push(studentDocument.roles[i].name);
+      }
 
       return res.status(200).json({
-        data: { ...studentDocument.toObject(), topic },
+        data: { ...studentDocument.toObject(), topic, roles: authorities },
       });
     } catch (error) {
       return res.status(500).json({ message: "Internal Error" });
