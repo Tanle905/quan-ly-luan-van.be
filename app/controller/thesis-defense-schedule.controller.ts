@@ -14,9 +14,19 @@ import {
 import { ScheduleModel } from "../model/schedule.model";
 import { TeacherModel } from "../model/teacher.model";
 import { TopicModel } from "../model/topic.model";
+import {
+  isCurEventBelongToCurTeacher,
+  isCurEventDateMatchCurSelectedDate,
+  isCurDateSlotsListContainCurSlot,
+} from "../util/schedule.util";
 
 export const thesisDefenseScheduleController = {
   studentList: {
+    getAll: async (req: Request, res: Response) => {
+      const scheduleDocument = await ScheduleModel.findOne({});
+
+      return res.status(200).json({ data: scheduleDocument });
+    },
     import: async (req: Request, res: Response) => {
       const { data } = req.body;
 
@@ -51,65 +61,87 @@ export const thesisDefenseScheduleController = {
 
       try {
         const scheduleDocument = await ScheduleModel.findOne({});
-
-        if (role === ROLES.TEACHER && MSCB) {
-          const teacherBusyTimeList =
-            scheduleDocument.calendar.scheduleEventList.filter(
-              (event) =>
-                event.type === ScheduleEventType.BusyEvent &&
-                event.busyTimeData.MSCB === MSCB
-            );
-          const mappedBusyTimeList = teacherBusyTimeList.map((event) => {
-            const day = dayjs(event.busyTimeData.start)
+        const busyTimeList = scheduleDocument.calendar.scheduleEventList.filter(
+          (event) => event.type === ScheduleEventType.BusyEvent
+        );
+        const thesisDefenseTimeList =
+          scheduleDocument.calendar.scheduleEventList.filter(
+            (event) => event.type === ScheduleEventType.ThesisDefenseEvent
+          );
+        const mappedBusyTimeList = busyTimeList
+          .map((event) => {
+            const day = dayjs(event.busyTimeData?.start)
               .utcOffset(0)
               .startOf("day");
 
-            return {
-              id: event.busyTimeData.id,
-              start: day,
-              slots: event.busyTimeData.slots.map((slot, index) => {
-                const startDur = slot + (slot > 5 ? 7 : 6);
-                const endDur = startDur + 1;
-                return {
-                  slot,
-                  title: "Buổi bận",
-                  start: day.add(startDur, "hour").toDate(),
-                  end: day.add(endDur, "hour").toDate(),
-                };
-              }),
-            };
-          });
+            return role !== ROLES.TEACHER ||
+              (role === ROLES.TEACHER && event.busyTimeData.MSCB === MSCB)
+              ? {
+                  id: event.busyTimeData?.id,
+                  MSCB: event.busyTimeData.MSCB,
+                  start: day,
+                  slots: event.busyTimeData?.slots.map((slot, index) => {
+                    const startDur = slot + (slot > 5 ? 7 : 6);
+                    const endDur = startDur + 1;
+                    return {
+                      slot,
+                      title: `Buổi bận ${
+                        role === ROLES.ADMIN ? event.busyTimeData.MSCB : ""
+                      }`,
+                      start: day.add(startDur, "hour").toDate(),
+                      end: day.add(endDur, "hour").toDate(),
+                    };
+                  }),
+                }
+              : null;
+          })
+          .filter((e) => e);
+        const mappedThesisDefenseTimeList = thesisDefenseTimeList
+          .map((event) => {
+            const day = dayjs(event.thesisDefenseTimeData?.start)
+              .utcOffset(0)
+              .startOf("day");
 
+            return role !== ROLES.STUDENT ||
+              (role === ROLES.STUDENT &&
+                event.thesisDefenseTimeData.MSSV === MSSV)
+              ? {
+                  id: event.thesisDefenseTimeData?.id,
+                  MSSV: event.thesisDefenseTimeData?.MSSV,
+                  MSCB: event.thesisDefenseTimeData?.MSCB,
+                  start: day,
+                  slots: [event.thesisDefenseTimeData?.slots].map(
+                    (slot, index) => {
+                      const startDur = slot + (slot > 5 ? 7 : 6);
+                      const endDur = startDur + 1;
+                      return {
+                        slot,
+                        type: event.type,
+                        title: `Buổi báo cáo ${
+                          role === ROLES.ADMIN
+                            ? event.thesisDefenseTimeData?.MSCB
+                            : ""
+                        }`,
+                        start: day.add(startDur, "hour").toDate(),
+                        end: day.add(endDur, "hour").toDate(),
+                      };
+                    }
+                  ),
+                }
+              : null;
+          })
+          .filter((e) => e);
+
+        if (role === ROLES.TEACHER && MSCB) {
           return res.status(200).json({ data: mappedBusyTimeList });
         }
         if (role === ROLES.STUDENT) {
-          return res.status(200).json({ data: [] });
+          return res.status(200).json({ data: mappedThesisDefenseTimeList });
         }
         if (role === ROLES.ADMIN) {
-          const mappedBusyTimeList =
-            scheduleDocument.calendar.scheduleEventList.map((event) => {
-              const day = dayjs(event.busyTimeData.start)
-                .utcOffset(0)
-                .startOf("day");
-
-              return {
-                id: event.busyTimeData.id,
-                start: day,
-                slots: event.busyTimeData.slots.map((slot, index) => {
-                  const startDur = slot + (slot > 5 ? 7 : 6);
-                  const endDur = startDur + 1;
-                  return {
-                    slot,
-                    type: event.type,
-                    title: `Buổi bận ${event.busyTimeData.MSCB}`,
-                    start: day.add(startDur, "hour").toDate(),
-                    end: day.add(endDur, "hour").toDate(),
-                  };
-                }),
-              };
-            });
-
-          return res.status(200).json({ data: mappedBusyTimeList });
+          return res.status(200).json({
+            data: [...mappedBusyTimeList, ...mappedThesisDefenseTimeList],
+          });
         }
       } catch (error: any) {
         console.log(error);
@@ -180,6 +212,28 @@ export const thesisDefenseScheduleController = {
         }
       },
     },
+    addScheduleManually: async (req: Request, res: Response) => {
+      try {
+        const scheduleDocument = await ScheduleModel.findOne({});
+        scheduleDocument.calendar.scheduleEventList.push({
+          type: ScheduleEventType.ThesisDefenseEvent,
+          editable: true,
+          thesisDefenseTimeData: {
+            id: new mongoose.Types.ObjectId(),
+            MSCB: ["CB11111", "CB22222", "CB12345"],
+            MSSV: "TESTTEST",
+            slots: 9,
+            studentName: "Test",
+            teacherName: "Bui Vo Quoc Bao",
+            topic: new mongoose.Types.ObjectId("63cfb23a790b00ee915f0e70"),
+            start: dayjs("2023-03-10T06:18:01.810+00:00").toDate(),
+          },
+        });
+
+        await scheduleDocument.save();
+        return res.status(200).json({});
+      } catch (error: any) {}
+    },
     autoSchedule: async (req: Request, res: Response) => {
       const scheduleDocument = await ScheduleModel.findOne({});
       const studentLists = scheduleDocument.studentLists;
@@ -199,6 +253,7 @@ export const thesisDefenseScheduleController = {
 
           const mappedStudents = await Promise.all(
             list.students.map(async (student, index) => {
+              //Check if student is already have schedule
               if (student.isHaveThesisSchedule) return student;
 
               let isHaveThesisSchedule: Boolean = false;
@@ -288,7 +343,7 @@ export const thesisDefenseScheduleController = {
                       MSSV: student.MSSV,
                       studentName: `${student.lastName} ${student.firstName}`,
                       teacherName: "",
-                      topicName: topicDocument.topicName,
+                      topic: topicDocument._id,
                       slots: slot,
                       id: new mongoose.Types.ObjectId(),
                     };
@@ -328,36 +383,3 @@ export const thesisDefenseScheduleController = {
     },
   },
 };
-
-function formatStandardDate(date: any) {
-  return dayjs(date).utcOffset(0).startOf("day").format("DD-MM-YYYY");
-}
-
-function isCurEventDateMatchCurSelectedDate(
-  event: ScheduleEventTime,
-  currentSelectedDateFormated: string
-) {
-  return [
-    event?.busyTimeData?.start &&
-      formatStandardDate(event?.busyTimeData?.start),
-    event?.thesisDefenseTimeData?.start &&
-      formatStandardDate(event?.thesisDefenseTimeData?.start),
-  ].includes(currentSelectedDateFormated);
-}
-
-function isCurDateSlotsListContainCurSlot(
-  todayBusyTime: ScheduleEventTime,
-  slot: Slot
-) {
-  return (
-    todayBusyTime?.busyTimeData?.slots?.includes(slot) ||
-    todayBusyTime?.thesisDefenseTimeData?.slots === slot
-  );
-}
-
-function isCurEventBelongToCurTeacher(event: ScheduleEventTime, MSCB: string) {
-  return (
-    [event?.busyTimeData?.MSCB].includes(MSCB) ||
-    event?.thesisDefenseTimeData?.MSCB.includes(MSCB)
-  );
-}

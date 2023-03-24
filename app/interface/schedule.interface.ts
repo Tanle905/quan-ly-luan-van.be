@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { ScheduleEventType, Slot } from "../constants and enums/variable";
 import { CalendarEvent } from "./calendar.interface";
 import { Student } from "./student.interface";
@@ -13,7 +14,7 @@ export interface ThesisDefenseTime extends CalendarEvent {
   MSSV: string;
   studentName: string;
   teacherName: string;
-  topicName: string;
+  topic: mongoose.Types.ObjectId;
   slots: Slot;
 }
 

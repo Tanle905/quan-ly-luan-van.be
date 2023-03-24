@@ -8,7 +8,12 @@ import { thesisDefenseScheduleController } from "../controller/thesis-defense-sc
 export const thesisDefenseScheduleRouter = Router();
 
 thesisDefenseScheduleRouter
+  .route(THESIS_DEFENSE_SCHEDULE_ROUTE.STUDENT_LIST)
+  .get(thesisDefenseScheduleController.studentList.getAll);
+
+thesisDefenseScheduleRouter
   .route(THESIS_DEFENSE_SCHEDULE_ROUTE.STUDENT_LIST + COMMON_ROUTE.IMPORT)
+  .get(thesisDefenseScheduleController.studentList.getAll)
   .post(thesisDefenseScheduleController.studentList.import);
 
 thesisDefenseScheduleRouter

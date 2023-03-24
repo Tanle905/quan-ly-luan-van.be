@@ -72,8 +72,8 @@ export const thesisDefenseTimeDataSchema: Schema =
       type: String,
       required: true,
     },
-    topicName: {
-      type: String,
+    topic: {
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
     slots: {
