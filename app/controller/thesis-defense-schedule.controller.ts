@@ -140,7 +140,7 @@ export const thesisDefenseScheduleController = {
         }
         if (role === ROLES.ADMIN) {
           return res.status(200).json({
-            data: [...mappedBusyTimeList, ...mappedThesisDefenseTimeList],
+            data: mappedThesisDefenseTimeList,
           });
         }
       } catch (error: any) {
@@ -218,16 +218,7 @@ export const thesisDefenseScheduleController = {
         scheduleDocument.calendar.scheduleEventList.push({
           type: ScheduleEventType.ThesisDefenseEvent,
           editable: true,
-          thesisDefenseTimeData: {
-            id: new mongoose.Types.ObjectId(),
-            MSCB: ["CB11111", "CB22222", "CB12345"],
-            MSSV: "TESTTEST",
-            slots: 9,
-            studentName: "Test",
-            teacherName: "Bui Vo Quoc Bao",
-            topic: new mongoose.Types.ObjectId("63cfb23a790b00ee915f0e70"),
-            start: dayjs("2023-03-10T06:18:01.810+00:00").toDate(),
-          },
+          thesisDefenseTimeData: req.body,
         });
 
         await scheduleDocument.save();
