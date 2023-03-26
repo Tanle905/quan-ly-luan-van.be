@@ -114,7 +114,7 @@ export const scheduleCalendarDataSchema = new mongoose.Schema<ScheduleCalendar>(
       type: CalendarEventDataSchema,
     },
     thesisDefenseWeek: {
-      type: Date,
+      type: CalendarEventDataSchema,
     },
   }
 );

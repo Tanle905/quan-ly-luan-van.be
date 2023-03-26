@@ -28,7 +28,7 @@ export interface ScheduleEventTime {
 export interface ScheduleCalendar {
   scheduleEventList: ScheduleEventTime[];
   reportPrepareWeek: CalendarEvent;
-  thesisDefenseWeek: Date;
+  thesisDefenseWeek: CalendarEvent;
 }
 
 export interface ThesisDefenseSchedule {

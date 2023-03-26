@@ -6,6 +6,7 @@ export interface CalendarEvent {
   end?: Date;
   title?: string;
   allDay?: boolean;
+  display?: string;
   backgroundColor?: string;
   borderColor?: string;
   editable?: boolean;

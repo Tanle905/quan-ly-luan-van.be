@@ -13,6 +13,7 @@ export const CalendarEventDataSchema = new mongoose.Schema<CalendarEvent>({
   start: {
     type: Date,
   },
+  display: { type: String, default: "" },
   backgroundColor: { type: String, default: "#ad9734" },
   borderColor: { type: String, default: "#ad9734" },
   editable: { type: Boolean, default: false },
