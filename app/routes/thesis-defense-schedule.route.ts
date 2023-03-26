@@ -48,3 +48,18 @@ thesisDefenseScheduleRouter
   )
   .post(thesisDefenseScheduleController.calendar.busyTime.import)
   .put(thesisDefenseScheduleController.calendar.busyTime.edit);
+
+thesisDefenseScheduleRouter
+  .route(
+    THESIS_DEFENSE_SCHEDULE_ROUTE.CALENDAR.BASE +
+      THESIS_DEFENSE_SCHEDULE_ROUTE.CALENDAR.DATE
+  )
+  .get(thesisDefenseScheduleController.calendar.getCalendarEventsByDate);
+
+thesisDefenseScheduleRouter
+  .route(
+    THESIS_DEFENSE_SCHEDULE_ROUTE.CALENDAR.BASE +
+      THESIS_DEFENSE_SCHEDULE_ROUTE.CALENDAR.THESIS_DEFENSE_TIME +
+      THESIS_DEFENSE_SCHEDULE_ROUTE.CALENDAR.ID
+  )
+  .delete(thesisDefenseScheduleController.calendar.thesisDefenseTime.delete);

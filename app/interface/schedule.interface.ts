@@ -19,6 +19,7 @@ export interface ThesisDefenseTime extends CalendarEvent {
 }
 
 export interface ScheduleEventTime {
+  _id?: mongoose.Types.ObjectId;
   type: ScheduleEventType;
   editable?: boolean;
   busyTimeData?: BusyTime;

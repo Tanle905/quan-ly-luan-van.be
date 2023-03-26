@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { Request, Response } from "express";
+import { cloneDeep } from "lodash";
 import mongoose from "mongoose";
 import {
   ROLES,
@@ -173,6 +174,42 @@ export const thesisDefenseScheduleController = {
         return res.status(500).json({ message: "Internal Error" });
       }
     },
+    getCalendarEventsByDate: async (req: Request, res: Response) => {
+      const date = dayjs(req.params.date).format("DD-MM-YYYY");
+
+      try {
+        const scheduleDocument = await ScheduleModel.findOne({});
+        const selectedDateEvents = await Promise.all(
+          scheduleDocument.calendar.scheduleEventList
+            .filter(
+              (event) =>
+                (event.busyTimeData &&
+                  dayjs(event.busyTimeData?.start).format("DD-MM-YYYY") ===
+                    date) ||
+                (event.thesisDefenseTimeData &&
+                  dayjs(event.thesisDefenseTimeData?.start).format(
+                    "DD-MM-YYYY"
+                  ) === date)
+            )
+            .map(async (e: any) => {
+              if (e.type === ScheduleEventType.BusyEvent) return e;
+
+              const clonedEvent = cloneDeep(e.toObject());
+              const topic = await TopicModel.findOne({
+                _id: e.thesisDefenseTimeData.topic,
+              });
+              clonedEvent.thesisDefenseTimeData.topic = topic;
+
+              return clonedEvent;
+            })
+        );
+
+        return res.status(200).json({ data: selectedDateEvents });
+      } catch (error: any) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal Error" });
+      }
+    },
     editScheduleWeeks: async (req: Request, res: Response) => {
       const { thesisDefenseWeek, reportPrepareWeek } = req.body;
       try {
@@ -180,12 +217,12 @@ export const thesisDefenseScheduleController = {
         console.log(thesisDefenseWeek);
         scheduleDocument.calendar.reportPrepareWeek = {
           ...reportPrepareWeek,
-          backgroundColor: "#d19f97",
+          backgroundColor: "#C53113",
           display: "background",
         };
         scheduleDocument.calendar.thesisDefenseWeek = {
           ...thesisDefenseWeek,
-          backgroundColor: "#9ad197",
+          backgroundColor: "#358630",
           display: "background",
         };
 
@@ -281,15 +318,15 @@ export const thesisDefenseScheduleController = {
         }
       },
       autoSchedule: async (req: Request, res: Response) => {
-        const scheduleDocument = await ScheduleModel.findOne({});
-        const studentLists = scheduleDocument.studentLists;
-        const thesisDefenseStartDate = dayjs(
-          scheduleDocument.calendar.thesisDefenseWeek.start
-        )
-          .utcOffset(0)
-          .startOf("day");
-
         try {
+          console.log(["sdfsdfsf"]);
+          const scheduleDocument = await ScheduleModel.findOne({});
+          const studentLists = scheduleDocument.studentLists;
+          const thesisDefenseStartDate = dayjs(
+            scheduleDocument.calendar.thesisDefenseWeek.start
+          )
+            .utcOffset(0)
+            .startOf("day");
           await Promise.all(
             studentLists.map(async (list) => {
               //Check for student list owner's free slot
@@ -424,7 +461,26 @@ export const thesisDefenseScheduleController = {
 
           await scheduleDocument.save();
 
-          return res.status(200).json({ data: scheduleDocument.toObject() });
+          return res.status(200).json({ data: scheduleDocument });
+        } catch (error: any) {
+          console.log(error);
+          return res.status(500).json({ message: "Internal Error" });
+        }
+      },
+      delete: async (req: Request, res: Response) => {
+        const { id } = req.params;
+        try {
+          const scheduleDocument = await ScheduleModel.findOne({});
+          const filteredScheduleEventList =
+            scheduleDocument.calendar.scheduleEventList.filter(
+              (e) => e._id.toString() !== id
+            );
+
+          scheduleDocument.calendar.scheduleEventList =
+            filteredScheduleEventList;
+          await scheduleDocument.save();
+
+          return res.status(200).json({ message: "Delete complete" });
         } catch (error: any) {
           return res.status(500).json({ message: "Internal Error" });
         }
