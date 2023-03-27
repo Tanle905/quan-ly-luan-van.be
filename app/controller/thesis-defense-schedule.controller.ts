@@ -76,7 +76,12 @@ export const thesisDefenseScheduleController = {
       const { MSCB, MSSV, role } = req.body;
 
       try {
-        const scheduleDocument = await ScheduleModel.findOne({});
+        const [scheduleDocument, teacherDocuments, topicDocuments] =
+          await Promise.all([
+            ScheduleModel.findOne({}),
+            TeacherModel.find({}),
+            TopicModel.find({}),
+          ]);
         const busyTimeList = scheduleDocument.calendar.scheduleEventList.filter(
           (event) => event.type === ScheduleEventType.BusyEvent
         );
@@ -118,14 +123,12 @@ export const thesisDefenseScheduleController = {
               .utcOffset(0)
               .startOf("day");
 
-            return role !== ROLES.STUDENT ||
+            return role === ROLES.ADMIN ||
               (role === ROLES.STUDENT &&
-                event.thesisDefenseTimeData.MSSV === MSSV)
+                event.thesisDefenseTimeData.MSSV === MSSV) ||
+              (role === ROLES.TEACHER &&
+                event.thesisDefenseTimeData.MSCB.includes(MSCB))
               ? {
-                  id: event.thesisDefenseTimeData?.id,
-                  MSSV: event.thesisDefenseTimeData?.MSSV,
-                  MSCB: event.thesisDefenseTimeData?.MSCB,
-                  start: day,
                   slots: [event.thesisDefenseTimeData?.slots].map(
                     (slot, index) => {
                       const startDur = slot + (slot > 5 ? 7 : 6);
@@ -143,6 +146,21 @@ export const thesisDefenseScheduleController = {
                       };
                     }
                   ),
+                  ...(event.type && { type: event.type }),
+                  id: event.thesisDefenseTimeData?.id,
+                  MSSV: event.thesisDefenseTimeData?.MSSV,
+                  MSCB: event.thesisDefenseTimeData?.MSCB,
+                  studentName: event.thesisDefenseTimeData?.studentName,
+                  topic: topicDocuments.find(
+                    (topic) =>
+                      event.thesisDefenseTimeData.topic.toString() ===
+                      topic._id.toString()
+                  ),
+                  teacherName: event.thesisDefenseTimeData?.MSCB.map((cb) => {
+                    const teacher = teacherDocuments.find((t) => t.MSCB === cb);
+                    return `${teacher.lastName} ${teacher.firstName}`;
+                  }),
+                  start: day,
                 }
               : null;
           })
@@ -152,13 +170,22 @@ export const thesisDefenseScheduleController = {
           return res.status(200).json({
             data: [
               ...mappedBusyTimeList,
+              ...mappedThesisDefenseTimeList,
               scheduleDocument.calendar.reportPrepareWeek,
               scheduleDocument.calendar.thesisDefenseWeek,
             ],
           });
         }
         if (role === ROLES.STUDENT) {
-          return res.status(200).json({ data: mappedThesisDefenseTimeList });
+          return res
+            .status(200)
+            .json({
+              data: [
+                ...mappedThesisDefenseTimeList,
+                scheduleDocument.calendar.reportPrepareWeek,
+                scheduleDocument.calendar.thesisDefenseWeek,
+              ],
+            });
         }
         if (role === ROLES.ADMIN) {
           return res.status(200).json({
