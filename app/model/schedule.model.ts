@@ -166,6 +166,10 @@ export const scheduleDataSchema: Schema =
           thesisDefenseWeek: null,
         },
       },
+      isOpenForGradeInput: {
+        type: Boolean,
+        default: false,
+      },
     },
     {
       timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },

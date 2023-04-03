@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { Student } from "../interface/student.interface";
 import { UserModel } from "./user.model";
+import { ThesisStatus } from "../constants and enums/variable";
 
 export const studentDataSchema: Schema = new mongoose.Schema<Student>(
   {
@@ -30,6 +31,13 @@ export const studentDataSchema: Schema = new mongoose.Schema<Student>(
     ],
     topic: {
       type: Schema.Types.ObjectId,
+    },
+    grade: {
+      type: Number,
+    },
+    status: {
+      type: Schema.Types.Mixed,
+      enum: ThesisStatus,
     },
     reportSchedule: {
       type: Object,

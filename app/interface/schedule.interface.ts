@@ -38,6 +38,7 @@ export interface ThesisDefenseSchedule {
    * Data for client rendering.
    */
   calendar?: ScheduleCalendar;
+  isOpenForGradeInput: boolean;
 }
 
 export interface StudentList {

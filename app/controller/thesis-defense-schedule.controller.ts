@@ -21,8 +21,31 @@ import {
   isCurDateSlotsListContainCurSlot,
   isStudentHaveThesisSchedule,
 } from "../util/schedule.util";
+import { StudentModel } from "../model/student.model";
 
 export const thesisDefenseScheduleController = {
+  gradingStatus: {
+    get: async (req: Request, res: Response) => {
+      const scheduleDocument = await ScheduleModel.findOne({});
+
+      return res
+        .status(200)
+        .json({ data: scheduleDocument.isOpenForGradeInput });
+    },
+    edit: async (req: Request, res: Response) => {
+      const { status } = req.body;
+
+      const scheduleDocument = await ScheduleModel.findOne({});
+
+      scheduleDocument.isOpenForGradeInput = status;
+
+      await scheduleDocument.save();
+
+      return res
+        .status(200)
+        .json({ data: scheduleDocument.isOpenForGradeInput });
+    },
+  },
   studentList: {
     getAll: async (req: Request, res: Response) => {
       const scheduleDocument = await ScheduleModel.findOne({});
@@ -31,6 +54,7 @@ export const thesisDefenseScheduleController = {
     },
     import: async (req: Request, res: Response) => {
       const { data } = req.body;
+      const { students, incompleteStudents } = data;
 
       try {
         const scheduleDocument = await ScheduleModel.findOne({});
@@ -49,7 +73,21 @@ export const thesisDefenseScheduleController = {
 
         teacherDocument.isImportedStudentListToSystem = true;
 
-        await teacherDocument.save();
+        await Promise.all([
+          ...students.map(async (student) => {
+            const doc = await StudentModel.findOne({ MSSV: student.MSSV });
+            doc.status = student.status;
+
+            await doc.save();
+          }),
+          ...incompleteStudents.map(async (student) => {
+            const doc = await StudentModel.findOne({ MSSV: student.MSSV });
+            doc.status = student.status;
+
+            await doc.save();
+          }),
+          teacherDocument.save(),
+        ]);
 
         return res.status(200).json({ message: "Add student list completed." });
       } catch (error: any) {
@@ -177,15 +215,13 @@ export const thesisDefenseScheduleController = {
           });
         }
         if (role === ROLES.STUDENT) {
-          return res
-            .status(200)
-            .json({
-              data: [
-                ...mappedThesisDefenseTimeList,
-                scheduleDocument.calendar.reportPrepareWeek,
-                scheduleDocument.calendar.thesisDefenseWeek,
-              ],
-            });
+          return res.status(200).json({
+            data: [
+              ...mappedThesisDefenseTimeList,
+              scheduleDocument.calendar.reportPrepareWeek,
+              scheduleDocument.calendar.thesisDefenseWeek,
+            ],
+          });
         }
         if (role === ROLES.ADMIN) {
           return res.status(200).json({

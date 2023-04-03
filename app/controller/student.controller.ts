@@ -8,12 +8,13 @@ import { TopicModel } from "../model/topic.model";
 
 export const studentController = {
   getStudent: async (req: Request, res: Response) => {
-    const { search, sortBy, isAscSorting } = req.query;
+    const { search, sortBy, isAscSorting, status } = req.query;
     const { userId } = res.locals;
 
     try {
       const studentDocuments = await StudentModel.find({
         teacher: new ObjectId(userId),
+        ...(status && { status }),
         ...(search
           ? {
               $or: [
@@ -34,8 +35,7 @@ export const studentController = {
                 ) as SortOrder,
               }
             : { MSSV: 1 }
-        )
-        .limit(10);
+        );
       const mappedStudentDocument = await Promise.all(
         studentDocuments.map(async (doc) => {
           const topic = await TopicModel.findById(doc.topic);
@@ -47,6 +47,7 @@ export const studentController = {
         data: mappedStudentDocument,
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: "Internal Error" });
     }
   },
@@ -109,6 +110,19 @@ export const studentController = {
       return res.status(500).json({ message: "Internal Error" });
     }
   },
+  editStudentGrade: async (req: Request, res: Response) => {
+    const { MSSV } = req.params;
+    const { grade } = req.body;
+
+    try {
+      await StudentModel.findOneAndUpdate({ MSSV }, { grade });
+
+      return res.status(200).json({ message: "Update grade completed" });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Internal Error" });
+    }
+  },
   exportStudent: async (req: Request, res: Response) => {
     const { userId } = res.locals;
 
@@ -134,6 +148,7 @@ export const studentController = {
         }),
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: "Internal Error" });
     }
   },

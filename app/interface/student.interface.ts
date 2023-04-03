@@ -1,6 +1,5 @@
 import mongoose, { Types } from "mongoose";
 import { ThesisStatus } from "../constants and enums/variable";
-import { MatchedTeacher } from "../util/calculation.util";
 import { User } from "./user_and_roles.interface";
 
 export interface Student extends User {
@@ -12,6 +11,6 @@ export interface Student extends User {
   sentRequestsList?: string[];
   topic?: Types.ObjectId;
   reportSchedule?: any;
-  suitableThesisDefenseTeacherList?: MatchedTeacher[];
   status?: ThesisStatus;
+  grade?: number;
 }
