@@ -45,7 +45,7 @@ export const teacherManagementController = {
       req.body?.password && bcrypt.hashSync(req.body?.password, 8);
 
     try {
-      const roleDocument = await RoleModel.findOne({ name: ROLES.STUDENT });
+      const roleDocument = await RoleModel.findOne({ name: ROLES.TEACHER });
 
       await TeacherModel.findOneAndUpdate(
         { MSCB: req.body.MSCB },

@@ -10,3 +10,7 @@ teacherRouter
   .route(TEACHER_ROUTE.BASE)
   .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
   .post(teacherController.get);
+teacherRouter
+  .route(TEACHER_ROUTE.TOPIC)
+  .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
+  .post(teacherController.getTopicList);

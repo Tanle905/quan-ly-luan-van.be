@@ -32,6 +32,7 @@ export const STUDENT_ROUTE = {
 };
 export const TEACHER_ROUTE = {
   BASE: "/",
+  TOPIC: "/topic",
 };
 export const REQUEST_ROUTE = {
   BASE: "/",

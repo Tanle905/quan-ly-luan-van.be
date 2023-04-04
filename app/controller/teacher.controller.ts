@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { SortOrder } from "mongoose";
 import { TeacherModel } from "../model/teacher.model";
+import { TopicModel } from "../model/topic.model";
 
 export const teacherController = {
   get: async (req: Request, res: Response) => {
@@ -35,6 +36,16 @@ export const teacherController = {
       );
 
       return res.status(200).json({ data: teacherDocuments });
+    } catch (error) {
+      return res.status(500).json({ message: "Internal Error" });
+    }
+  },
+  getTopicList: async (req: Request, res: Response) => {
+    const { MSCB } = req.body;
+    try {
+      const topicDocuments = await TopicModel.find({ MSCB });
+
+      return res.status(200).json({ data: topicDocuments });
     } catch (error) {
       return res.status(500).json({ message: "Internal Error" });
     }
