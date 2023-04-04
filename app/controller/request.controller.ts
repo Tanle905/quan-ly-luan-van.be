@@ -6,6 +6,7 @@ import { RequestModel } from "../model/request.model";
 import { StudentModel } from "../model/student.model";
 import { TeacherModel } from "../model/teacher.model";
 import { TopicModel } from "../model/topic.model";
+import { NotificationModel } from "../model/notification.model";
 
 export const requestController = {
   getRequest: async (req: Request, res: Response) => {
@@ -109,6 +110,11 @@ export const requestController = {
         studentDocument.save(),
         newRequest.save(),
         newTopic.save(),
+        NotificationModel.create({
+          sender: studentDocument._id.toString(),
+          receiver: teacherDocument._id.toString(),
+          content: `Sinh viên ${studentDocument?.lastName} ${studentDocument?.firstName} (${studentDocument?.email}) - ${studentDocument?.MSSV} đã gửi yêu cầu xin hướng dẫn.`,
+        }),
       ]);
 
       return res.status(200).json({
@@ -177,6 +183,24 @@ export const requestController = {
         TopicModel.deleteMany({
           MSSV: studentDocument.MSSV,
           _id: { $ne: requestDocument.topic },
+        }),
+        NotificationModel.create({
+          sender:
+            role === ROLES.STUDENT
+              ? studentDocument._id.toString()
+              : teacherDocument._id.toString(),
+          receiver:
+            role === ROLES.TEACHER
+              ? studentDocument._id.toString()
+              : teacherDocument._id.toString(),
+          content:
+            role === ROLES.STUDENT
+              ? `Sinh viên ${
+                  studentDocument.lastName + " " + studentDocument.firstName
+                } đã chấp nhận yêu cầu.`
+              : `Giảng viên ${
+                  teacherDocument.lastName + " " + teacherDocument.firstName
+                }đã duyệt đề tài và chấp nhận yêu cầu`,
         }),
       ]);
 

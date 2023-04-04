@@ -5,6 +5,7 @@ import { SortOrder } from "mongoose";
 import { StudentModel } from "../model/student.model";
 import { TeacherModel } from "../model/teacher.model";
 import { TopicModel } from "../model/topic.model";
+import { NotificationModel } from "../model/notification.model";
 
 export const studentController = {
   getStudent: async (req: Request, res: Response) => {
@@ -100,6 +101,11 @@ export const studentController = {
         teachertDocument.save(),
         studentDocument.save(),
         TopicModel.findOneAndDelete({ _id: studentDocument.topic }),
+        NotificationModel.create({
+          sender: teachertDocument._id.toString(),
+          receiver: studentDocument._id.toString(),
+          content: `Bạn đã bị xóa ra khỏi danh sách đang thực hiện luận văn của giảng viên`,
+        }),
       ]);
 
       return res.status(200).json({

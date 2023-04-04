@@ -22,6 +22,7 @@ import {
   isStudentHaveThesisSchedule,
 } from "../util/schedule.util";
 import { StudentModel } from "../model/student.model";
+import { NotificationModel } from "../model/notification.model";
 
 export const thesisDefenseScheduleController = {
   gradingStatus: {
@@ -374,7 +375,14 @@ export const thesisDefenseScheduleController = {
             thesisDefenseTimeData: { ...req.body, topic: topicDocument._id },
           });
 
-          await scheduleDocument.save();
+          await Promise.all([
+            NotificationModel.create({
+              sender: "admin",
+              receiver: req.body.MSSV,
+              content: `Bạn đã có lịch báo cáo. Vui lòng xem lịch biểu`,
+            }),
+            scheduleDocument.save(),
+          ]);
           return res.status(200).json({});
         } catch (error: any) {
           return res.status(500).json({ message: "Internal Error" });
@@ -509,6 +517,18 @@ export const thesisDefenseScheduleController = {
                           type: ScheduleEventType.ThesisDefenseEvent,
                           thesisDefenseTimeData: thesisDefenseTime,
                         });
+                        Promise.all([
+                          NotificationModel.create({
+                            sender: list.MSCB,
+                            receiver: student.MSSV,
+                            content: `Bạn đã có lịch báo cáo. Vui lòng xem lịch biểu`,
+                          }),
+                          NotificationModel.create({
+                            sender: list.MSCB,
+                            receiver: list.MSCB,
+                            content: `Bạn đã có lịch báo cáo. Vui lòng xem lịch biểu`,
+                          }),
+                        ]);
 
                         return student;
                       }

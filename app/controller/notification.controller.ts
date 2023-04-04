@@ -5,10 +5,11 @@ import { UserModel } from "../model/user.model";
 export const notificationController = {
   getNotification: async (req: Request, res: Response) => {
     const { userId } = res.locals;
+    const { MSSV, MSCB } = req.query;
 
     try {
       const notificationDocuments = await NotificationModel.find({
-        receiver: userId,
+        $or: [{ receiver: userId }, { receiver: MSSV }, { receiver: MSCB }],
       }).sort({ createdAt: -1 });
 
       return res.status(200).json(notificationDocuments);
@@ -28,7 +29,7 @@ export const notificationController = {
         type,
       });
       const receiverDocument = await UserModel.findById(receiver);
-      
+
       receiverDocument.notificationCount += 1;
 
       Promise.all([notificationDocument.save(), receiverDocument.save()]);
