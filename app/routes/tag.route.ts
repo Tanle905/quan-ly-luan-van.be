@@ -4,4 +4,7 @@ import { tagController } from "../controller/tag.controller";
 
 export const tagRouter = Router();
 
-tagRouter.route(TAG_ROUTE.MAJOR_TAGS).get(tagController.getMajorTags);
+tagRouter
+  .route(TAG_ROUTE.MAJOR_TAGS)
+  .get(tagController.getMajorTags)
+  .post(tagController.addMajorTag);

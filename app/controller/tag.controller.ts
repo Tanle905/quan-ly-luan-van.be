@@ -11,4 +11,17 @@ export const tagController = {
       return res.status(500).json({ message: "Internal Error" });
     }
   },
+  addMajorTag: async (req: Request, res: Response) => {
+    const { value, color } = req.body;
+    try {
+      const tagDocument = await TagModel.findOne({ name: "majorTags" });
+      tagDocument.list.push({ value, color: color ?? "yellow" });
+
+      await tagDocument.save();
+
+      return res.status(200).json({ message: "Added tag complete" });
+    } catch (error) {
+      return res.status(500).json({ message: "Internal Error" });
+    }
+  },
 };

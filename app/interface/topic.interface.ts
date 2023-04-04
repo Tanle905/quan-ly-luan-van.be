@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { TopicStatus } from "../constants and enums/variable";
+import { TagDetails } from "./tag.interface";
 
 export interface Topic {
   _id?: mongoose.Types.ObjectId;
@@ -10,6 +11,6 @@ export interface Topic {
   topicEnglishName?: string;
   topicDescription: string;
   topicStatus?: TopicStatus;
-  majorTag?: string;
+  majorTag?: TagDetails[];
   history?: { updatedAt: Date; updatedBy: string }[];
 }

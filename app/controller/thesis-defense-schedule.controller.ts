@@ -390,7 +390,6 @@ export const thesisDefenseScheduleController = {
       },
       autoSchedule: async (req: Request, res: Response) => {
         try {
-          console.log(["sdfsdfsf"]);
           const scheduleDocument = await ScheduleModel.findOne({});
           const studentLists = scheduleDocument.studentLists;
           const thesisDefenseStartDate = dayjs(
@@ -460,7 +459,16 @@ export const thesisDefenseScheduleController = {
                                   input: "$majorTags",
                                   as: "tag",
                                   cond: {
-                                    $eq: ["$$tag", topicDocument.majorTag],
+                                    $in: [
+                                      "$$tag",
+                                      topicDocument.majorTag.reduce(
+                                        (prev: any, cur: any) => [
+                                          ...prev,
+                                          cur.value,
+                                        ],
+                                        []
+                                      ),
+                                    ],
                                   },
                                 },
                               },

@@ -30,9 +30,12 @@ export const topicDataSchema = new mongoose.Schema<Topic>(
       enum: TopicStatus,
       default: null,
     },
-    majorTag: {
-      type: String,
-    },
+    majorTag: [
+      {
+        type: { color: String, value: String },
+        default: [],
+      },
+    ],
     history: [
       {
         type: { updatedAt: Date, updatedBy: String },
