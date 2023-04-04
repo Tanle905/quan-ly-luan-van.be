@@ -131,6 +131,31 @@ export const requestController = {
 
     try {
       const requestDocument = await RequestModel.findById(requestId);
+      const studentDocument = await StudentModel.findOne({
+        MSSV: requestDocument.student.MSSV,
+      }).select("-username -password");
+      const teacherDocument = await TeacherModel.findOne({
+        MSCB: requestDocument.teacher.MSCB,
+      }).select("-username -password");
+
+      NotificationModel.create({
+        sender:
+          role === ROLES.STUDENT
+            ? studentDocument._id.toString()
+            : teacherDocument._id.toString(),
+        receiver:
+          role === ROLES.TEACHER
+            ? studentDocument._id.toString()
+            : teacherDocument._id.toString(),
+        content:
+          role === ROLES.STUDENT
+            ? `Sinh viên ${
+                studentDocument.lastName + " " + studentDocument.firstName
+              } đã chấp nhận yêu cầu.`
+            : `Giảng viên ${
+                teacherDocument.lastName + " " + teacherDocument.firstName
+              } đã duyệt đề tài và chấp nhận yêu cầu.`,
+      });
 
       if (
         !(
@@ -147,7 +172,7 @@ export const requestController = {
           default:
             break;
         }
-
+        console.log(role);
         await requestDocument.save();
         if (
           !(
@@ -157,13 +182,6 @@ export const requestController = {
         )
           return res.status(200).json("");
       }
-
-      const studentDocument = await StudentModel.findOne({
-        MSSV: requestDocument.student.MSSV,
-      }).select("-username -password");
-      const teacherDocument = await TeacherModel.findOne({
-        MSCB: requestDocument.teacher.MSCB,
-      }).select("-username -password");
 
       studentDocument.teacher = new mongoose.Types.ObjectId(
         teacherDocument._id
@@ -183,24 +201,6 @@ export const requestController = {
         TopicModel.deleteMany({
           MSSV: studentDocument.MSSV,
           _id: { $ne: requestDocument.topic },
-        }),
-        NotificationModel.create({
-          sender:
-            role === ROLES.STUDENT
-              ? studentDocument._id.toString()
-              : teacherDocument._id.toString(),
-          receiver:
-            role === ROLES.TEACHER
-              ? studentDocument._id.toString()
-              : teacherDocument._id.toString(),
-          content:
-            role === ROLES.STUDENT
-              ? `Sinh viên ${
-                  studentDocument.lastName + " " + studentDocument.firstName
-                } đã chấp nhận yêu cầu.`
-              : `Giảng viên ${
-                  teacherDocument.lastName + " " + teacherDocument.firstName
-                }đã duyệt đề tài và chấp nhận yêu cầu`,
         }),
       ]);
 
