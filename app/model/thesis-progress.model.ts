@@ -9,7 +9,6 @@ export const ThesisProgressDataSchema = new mongoose.Schema<ThesisProgress>({
   },
   MSCB: {
     type: String,
-    required: true,
   },
   events: {
     type: [CalendarEventDataSchema],

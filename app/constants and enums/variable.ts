@@ -30,3 +30,16 @@ export enum Slot {
   Slot10 = 10, //17h-18h
 }
 export const SLOTS: Slot[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+export const slotsData: { name: string; value: Slot }[] = [
+  { name: "7h", value: Slot.Slot1 },
+  { name: "8h", value: Slot.Slot2 },
+  { name: "9h", value: Slot.Slot3 },
+  { name: "10h", value: Slot.Slot4 },
+  { name: "11h", value: Slot.Slot5 },
+  { name: "13h", value: Slot.Slot6 },
+  { name: "14h", value: Slot.Slot7 },
+  { name: "15h", value: Slot.Slot8 },
+  { name: "16h", value: Slot.Slot9 },
+  { name: "17h", value: Slot.Slot10 },
+];

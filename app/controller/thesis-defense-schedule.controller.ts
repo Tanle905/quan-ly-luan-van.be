@@ -7,6 +7,7 @@ import {
   ScheduleEventType,
   Slot,
   SLOTS,
+  slotsData,
 } from "../constants and enums/variable";
 import {
   ScheduleEventTime,
@@ -23,6 +24,8 @@ import {
 } from "../util/schedule.util";
 import { StudentModel } from "../model/student.model";
 import { NotificationModel } from "../model/notification.model";
+import { sendEmail } from "../util/mail.util";
+import { haveScheduleEmailContent } from "../util/mail.util";
 
 export const thesisDefenseScheduleController = {
   gradingStatus: {
@@ -368,6 +371,9 @@ export const thesisDefenseScheduleController = {
           const topicDocument = await TopicModel.findOne({
             MSSV: req.body.MSSV,
           });
+          const studentDocument = await StudentModel.findOne({
+            MSSV: req.body.MSSV,
+          });
 
           scheduleDocument.calendar.scheduleEventList.push({
             type: ScheduleEventType.ThesisDefenseEvent,
@@ -383,8 +389,18 @@ export const thesisDefenseScheduleController = {
             }),
             scheduleDocument.save(),
           ]);
+          sendEmail(
+            studentDocument.email,
+            "Lịch báo cáo luận văn",
+            haveScheduleEmailContent(
+              `${studentDocument.lastName} ${studentDocument.firstName}`,
+              slotsData.find((s) => s.value === req.body.slots).name,
+              dayjs(req.body.start).format("DD-MM-YYYY")
+            )
+          );
           return res.status(200).json({});
         } catch (error: any) {
+          console.log(error);
           return res.status(500).json({ message: "Internal Error" });
         }
       },
@@ -537,6 +553,15 @@ export const thesisDefenseScheduleController = {
                             content: `Bạn đã có lịch báo cáo. Vui lòng xem lịch biểu`,
                           }),
                         ]);
+                        sendEmail(
+                          student.email,
+                          "Lịch báo cáo luận văn",
+                          haveScheduleEmailContent(
+                            `${student.lastName} ${student.firstName}`,
+                            slotsData.find((s) => s.value === slot).name,
+                            dayjs(currentSelectedDate).format("DD-MM-YYYY")
+                          )
+                        );
 
                         return student;
                       }

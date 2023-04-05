@@ -7,6 +7,11 @@ import { StudentModel } from "../model/student.model";
 import { TeacherModel } from "../model/teacher.model";
 import { TopicModel } from "../model/topic.model";
 import { NotificationModel } from "../model/notification.model";
+import {
+  commonEmailContent,
+  sendEmail,
+  sendRequestEmailContent,
+} from "../util/mail.util";
 
 export const requestController = {
   getRequest: async (req: Request, res: Response) => {
@@ -116,6 +121,15 @@ export const requestController = {
           content: `Sinh viên ${studentDocument?.lastName} ${studentDocument?.firstName} (${studentDocument?.email}) - ${studentDocument?.MSSV} đã gửi yêu cầu xin hướng dẫn.`,
         }),
       ]);
+      sendEmail(
+        teacherDocument.email,
+        "Quản lý luận văn",
+        sendRequestEmailContent(
+          `${teacherDocument.lastName} ${teacherDocument.firstName}`,
+          `${studentDocument.lastName} ${studentDocument.firstName}`,
+          studentDocument.MSSV
+        )
+      );
 
       return res.status(200).json({
         message: "Request Sent!",
@@ -165,14 +179,34 @@ export const requestController = {
         switch (role) {
           case ROLES.STUDENT:
             requestDocument.isStudentAccepted = true;
+            sendEmail(
+              teacherDocument.email,
+              "Quản lý luận văn",
+              commonEmailContent(
+                "",
+                `Sinh viên ${
+                  studentDocument.lastName + " " + studentDocument.firstName
+                } - ${studentDocument.MSSV} đã duyệt qua yêu cầu làm luận văn.`
+              )
+            );
             break;
           case ROLES.TEACHER:
             requestDocument.isTeacherAccepted = true;
+            sendEmail(
+              studentDocument.email,
+              "Quản lý luận văn",
+              commonEmailContent(
+                "",
+                `Giảng viên ${
+                  teacherDocument.lastName + " " + teacherDocument.firstName
+                } - ${teacherDocument.MSCB} đã duyệt qua yêu cầu làm luận văn.`
+              )
+            );
             break;
           default:
             break;
         }
-        console.log(role);
+
         await requestDocument.save();
         if (
           !(
