@@ -13,4 +13,5 @@ export interface Topic {
   topicStatus?: TopicStatus;
   majorTag?: TagDetails[];
   history?: { updatedAt: Date; updatedBy: string }[];
+  fileList?: string[];
 }

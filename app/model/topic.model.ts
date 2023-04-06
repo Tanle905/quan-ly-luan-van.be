@@ -42,6 +42,7 @@ export const topicDataSchema = new mongoose.Schema<Topic>(
         default: [],
       },
     ],
+    fileList: [{ type: String, default: [] }],
   },
   {
     timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },

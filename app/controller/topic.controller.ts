@@ -18,8 +18,14 @@ export const topicController = {
   },
   editTopic: async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { topicName, topicEnglishName, majorTag, topicDescription, role, updatedBy } =
-      req.body;
+    const {
+      topicName,
+      topicEnglishName,
+      majorTag,
+      topicDescription,
+      role,
+      updatedBy,
+    } = req.body;
 
     try {
       const topicDocument = await TopicModel.findById(id);
@@ -75,6 +81,21 @@ export const topicController = {
       await topicDocument.save();
 
       return res.status(200).json({ message: "Accepted topic complete !" });
+    } catch (error) {
+      return res.status(500).json({ message: "Internal Error" });
+    }
+  },
+  updateFile: async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+      const topicDocument = await TopicModel.findById(id);
+
+      topicDocument.fileList = req.body.file;
+
+      await topicDocument.save();
+
+      return res.status(200).json({ message: "Save file complete." });
     } catch (error) {
       return res.status(500).json({ message: "Internal Error" });
     }

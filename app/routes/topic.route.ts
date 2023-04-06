@@ -16,4 +16,5 @@ topicRouter
 topicRouter
   .route(TOPIC_ROUTE.ID + TOPIC_ROUTE.SEND)
   .all([authJwt.verifyToken, verifyStatus.isNotDeactivated])
-  .post(topicController.editTopic);
+  .post(topicController.editTopic)
+  .put(topicController.updateFile);
