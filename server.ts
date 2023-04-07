@@ -15,6 +15,7 @@ import {
   THESIS_DEFENSE_SCHEDULE_ENDPOINT,
   THESIS_PROGRESS_ENDPOINT,
   TOPIC_ENDPOINT,
+  TOPIC_MANAGEMENT_ENDPOINT,
   USER_MANAGEMENT_ENDPOINT,
   USER_PROFILE_ENDPOINT,
 } from "./app/constants and enums/endpoint";
@@ -33,6 +34,7 @@ import { thesisDefenseScheduleRouter } from "./app/routes/thesis-defense-schedul
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { teacherManagementRouter } from "./app/routes/teacher-management.route";
+import { topicManagementRouter } from "./app/routes/topic-management.route";
 
 //Config
 const app: Application = express();
@@ -59,6 +61,7 @@ app.use(REQUEST_ENDPOINT, requestRouter);
 app.use(NOTIFICATION_ENDPOINT, notificationRouter);
 app.use(STUDENT_MANAGEMENT_ENDPOINT, studentManagementRouter);
 app.use(TEACHER_MANAGEMENT_ENDPOINT, teacherManagementRouter);
+app.use(TOPIC_MANAGEMENT_ENDPOINT, topicManagementRouter);
 app.use(STUDENT_ENDPOINT, studentRouter);
 app.use(THESIS_PROGRESS_ENDPOINT, thesisProgressRouter);
 app.use(TOPIC_ENDPOINT, topicRouter);

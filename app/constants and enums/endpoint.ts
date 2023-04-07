@@ -24,6 +24,9 @@ export const TEACHER_MANAGEMENT_ROUTE = {
   BASE: "/",
   MSCB: "/:MSCB",
 };
+export const TOPIC_MANAGEMENT_ROUTE = {
+  BASE: "/",
+};
 export const STUDENT_ROUTE = {
   BASE: "/",
   MSSV: "/:MSSV",
@@ -80,6 +83,7 @@ export const USER_PROFILE_ENDPOINT = "/profile";
 export const USER_MANAGEMENT_ENDPOINT = "/user-management";
 export const STUDENT_MANAGEMENT_ENDPOINT = "/student-management";
 export const TEACHER_MANAGEMENT_ENDPOINT = "/teacher-management";
+export const TOPIC_MANAGEMENT_ENDPOINT = "/topic-management";
 export const STUDENT_ENDPOINT = "/student";
 export const TEACHER_ENDPOINT = "/teacher";
 export const REQUEST_ENDPOINT = "/request";
