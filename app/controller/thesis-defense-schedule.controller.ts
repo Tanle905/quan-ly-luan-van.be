@@ -604,21 +604,23 @@ export const thesisDefenseScheduleController = {
         const { id } = req.params;
         try {
           const scheduleDocument = await ScheduleModel.findOne({});
+          const selectedStudent =
+            scheduleDocument.calendar.scheduleEventList.find(
+              (e) => e._id.toString() === id
+            );
           const filteredScheduleEventList =
             scheduleDocument.calendar.scheduleEventList.filter((e) => {
-              if (e._id.toString() === id) {
-                StudentModel.findOneAndUpdate(
-                  { MSSV: e.thesisDefenseTimeData.MSSV },
-                  {
-                    $set: {
-                      status: ThesisStatus.IsReadyForThesisDefense,
-                    },
-                  }
-                );
-              }
-
               return e._id.toString() !== id;
             });
+
+          await StudentModel.findOneAndUpdate(
+            { MSSV: selectedStudent.thesisDefenseTimeData.MSSV },
+            {
+              $set: {
+                status: ThesisStatus.IsReadyForThesisDefense,
+              },
+            }
+          );
 
           scheduleDocument.calendar.scheduleEventList =
             filteredScheduleEventList;
