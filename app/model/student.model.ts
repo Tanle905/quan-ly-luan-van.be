@@ -38,6 +38,7 @@ export const studentDataSchema: Schema = new mongoose.Schema<Student>(
     status: {
       type: Schema.Types.Mixed,
       enum: ThesisStatus,
+      default: null,
     },
     reportSchedule: {
       type: Object,

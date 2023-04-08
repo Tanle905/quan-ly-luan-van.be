@@ -8,6 +8,7 @@ import {
   Slot,
   SLOTS,
   slotsData,
+  ThesisStatus,
 } from "../constants and enums/variable";
 import {
   ScheduleEventTime,
@@ -387,6 +388,14 @@ export const thesisDefenseScheduleController = {
               receiver: req.body.MSSV,
               content: `Bạn đã có lịch báo cáo. Vui lòng xem lịch biểu`,
             }),
+            StudentModel.findOneAndUpdate(
+              { MSSV: req.body.MSSV },
+              {
+                $set: {
+                  status: ThesisStatus.IsHadThesisDefenseSchedule,
+                },
+              }
+            ),
             scheduleDocument.save(),
           ]);
           sendEmail(
@@ -552,6 +561,14 @@ export const thesisDefenseScheduleController = {
                             receiver: list.MSCB,
                             content: `Bạn đã có lịch báo cáo. Vui lòng xem lịch biểu`,
                           }),
+                          StudentModel.findOneAndUpdate(
+                            { MSSV: student.MSSV },
+                            {
+                              $set: {
+                                status: ThesisStatus.IsHadThesisDefenseSchedule,
+                              },
+                            }
+                          ),
                         ]);
                         sendEmail(
                           student.email,
@@ -588,9 +605,20 @@ export const thesisDefenseScheduleController = {
         try {
           const scheduleDocument = await ScheduleModel.findOne({});
           const filteredScheduleEventList =
-            scheduleDocument.calendar.scheduleEventList.filter(
-              (e) => e._id.toString() !== id
-            );
+            scheduleDocument.calendar.scheduleEventList.filter((e) => {
+              if (e._id.toString() === id) {
+                StudentModel.findOneAndUpdate(
+                  { MSSV: e.thesisDefenseTimeData.MSSV },
+                  {
+                    $set: {
+                      status: ThesisStatus.IsReadyForThesisDefense,
+                    },
+                  }
+                );
+              }
+
+              return e._id.toString() !== id;
+            });
 
           scheduleDocument.calendar.scheduleEventList =
             filteredScheduleEventList;

@@ -8,7 +8,7 @@ import { ROLES } from "../constants and enums/variable";
 
 export const studentManagementController = {
   getStudents: async (req: Request, res: Response) => {
-    const { search, sortBy, isAscSorting } = req.query;
+    const { search, sortBy, isAscSorting, status } = req.query;
 
     try {
       const studentDocuments = await StudentModel.find({
@@ -22,6 +22,9 @@ export const studentManagementController = {
               ],
             }
           : {}),
+          ...status && {
+            status: {$regex: status}
+          }
       })
         .select("-password")
         .sort(
