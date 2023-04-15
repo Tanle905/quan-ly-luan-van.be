@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import { Student } from "../interface/student.interface";
 import { UserModel } from "./user.model";
 import { ThesisStatus } from "../constants and enums/variable";
+import { CalendarEventDataSchema } from "./calendar.model";
 
 export const studentDataSchema: Schema = new mongoose.Schema<Student>(
   {
@@ -41,7 +42,8 @@ export const studentDataSchema: Schema = new mongoose.Schema<Student>(
       default: null,
     },
     reportSchedule: {
-      type: Object,
+      type: CalendarEventDataSchema,
+      default: null,
     },
   },
   {

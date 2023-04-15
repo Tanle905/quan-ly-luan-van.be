@@ -179,10 +179,18 @@ export const thesisDefenseScheduleController = {
                       return {
                         slot,
                         type: event.type,
-                        title: `Buổi báo cáo ${
-                          role === ROLES.ADMIN
-                            ? event.thesisDefenseTimeData?.MSCB
-                            : ""
+                        title: `Buổi báo cáo của các giảng viên ${teacherDocuments
+                          .reduce(
+                            (prev, cur) =>
+                              event.thesisDefenseTimeData.MSCB.includes(
+                                cur.MSCB
+                              )
+                                ? [...prev, `${cur.lastName}, ${cur.firstName}`]
+                                : prev,
+                            []
+                          )
+                          .join(", ")} - Sinh viên thực hiện ${
+                          event.thesisDefenseTimeData?.studentName
                         }`,
                         start: day.add(startDur, "hour").toDate(),
                         end: day.add(endDur, "hour").toDate(),
@@ -566,6 +574,10 @@ export const thesisDefenseScheduleController = {
                             {
                               $set: {
                                 status: ThesisStatus.IsHadThesisDefenseSchedule,
+                                reportSchedule: {
+                                  start: dayjs(currentSelectedDate).toDate(),
+                                  title: slot.toString(),
+                                },
                               },
                             }
                           ),

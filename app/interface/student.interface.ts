@@ -1,6 +1,7 @@
 import mongoose, { Types } from "mongoose";
 import { ThesisStatus } from "../constants and enums/variable";
 import { User } from "./user_and_roles.interface";
+import { CalendarEvent } from "./calendar.interface";
 
 export interface Student extends User {
   MSSV: string;
@@ -10,7 +11,7 @@ export interface Student extends User {
   teacher?: mongoose.Types.ObjectId;
   sentRequestsList?: string[];
   topic?: Types.ObjectId;
-  reportSchedule?: any;
+  reportSchedule?: CalendarEvent;
   status?: ThesisStatus;
   grade?: number;
 }
