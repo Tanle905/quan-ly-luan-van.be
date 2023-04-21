@@ -360,7 +360,7 @@ export const thesisDefenseScheduleController = {
 
           scheduleDocument.calendar.scheduleEventList =
             scheduleDocument.calendar.scheduleEventList.filter(
-              (event) => event.busyTimeData.id.toString() !== id
+              (event) => event?.busyTimeData?.id.toString() !== id
             );
 
           await scheduleDocument.save();
