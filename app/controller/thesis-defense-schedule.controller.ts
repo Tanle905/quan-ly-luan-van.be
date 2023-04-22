@@ -630,6 +630,7 @@ export const thesisDefenseScheduleController = {
             {
               $set: {
                 status: ThesisStatus.IsReadyForThesisDefense,
+                reportSchedule: null,
               },
             }
           );
