@@ -22,9 +22,9 @@ export const studentManagementController = {
               ],
             }
           : {}),
-          ...status && {
-            status: {$regex: status}
-          }
+        ...(status && {
+          status: status !== "null" ? { $regex: status } : null,
+        }),
       })
         .select("-password")
         .sort(
