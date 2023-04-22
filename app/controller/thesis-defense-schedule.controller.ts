@@ -185,7 +185,7 @@ export const thesisDefenseScheduleController = {
                               event.thesisDefenseTimeData.MSCB.includes(
                                 cur.MSCB
                               )
-                                ? [...prev, `${cur.lastName}, ${cur.firstName}`]
+                                ? [...prev, `${cur.lastName} ${cur.firstName}`]
                                 : prev,
                             []
                           )

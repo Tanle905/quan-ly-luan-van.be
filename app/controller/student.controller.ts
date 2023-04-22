@@ -15,7 +15,9 @@ export const studentController = {
     try {
       const studentDocuments = await StudentModel.find({
         teacher: new ObjectId(userId),
-        ...(status && { status }),
+        ...(status && {
+          status: status !== "null" ? { $regex: status } : null,
+        }),
         ...(search
           ? {
               $or: [
