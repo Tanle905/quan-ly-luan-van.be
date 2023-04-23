@@ -335,15 +335,25 @@ export const thesisDefenseScheduleController = {
         try {
           const scheduleDocument = await ScheduleModel.findOne({});
 
-          scheduleDocument.calendar.scheduleEventList =
-            scheduleDocument.calendar.scheduleEventList.map((event) => {
-              if (
+          if (
+            scheduleDocument.calendar.scheduleEventList.find(
+              (event) =>
                 event.type === ScheduleEventType.BusyEvent &&
                 event.busyTimeData.id.toString() === id
-              )
-                return req.body as unknown as ScheduleEventTime;
-              return event;
-            });
+            )
+          ) {
+            scheduleDocument.calendar.scheduleEventList =
+              scheduleDocument.calendar.scheduleEventList.map((event) => {
+                if (
+                  event.type === ScheduleEventType.BusyEvent &&
+                  event.busyTimeData.id.toString() === id
+                )
+                  return req.body as unknown as ScheduleEventTime;
+                return event;
+              });
+          } else {
+            scheduleDocument.calendar.scheduleEventList.push(req.body);
+          }
 
           await scheduleDocument.save();
 
