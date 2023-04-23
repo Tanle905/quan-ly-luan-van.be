@@ -132,7 +132,7 @@ export const requestController = {
       );
 
       return res.status(200).json({
-        message: "Request Sent!",
+        id: newRequest.id,
       });
     } catch (error) {
       return res.status(500).json({ message: "Internal Error" });
