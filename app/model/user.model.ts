@@ -36,7 +36,7 @@ export const userDataSchema: Schema = new mongoose.Schema<User>(
       type: String,
     },
     CCCD: {
-      type: Number,
+      type: String,
     },
     notificationCount: {
       type: Number,

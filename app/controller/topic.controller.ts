@@ -30,9 +30,7 @@ export const topicController = {
     try {
       const topicDocument = await TopicModel.findById(id);
 
-      if (role === ROLES.STUDENT)
-        topicDocument.topicStatus = TopicStatus.Pending;
-
+      topicDocument.topicStatus = TopicStatus.Pending;
       topicDocument.topicName = topicName;
       topicDocument.topicEnglishName = topicEnglishName;
       topicDocument.majorTag = majorTag;

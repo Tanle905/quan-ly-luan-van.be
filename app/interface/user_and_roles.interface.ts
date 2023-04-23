@@ -15,7 +15,7 @@ export interface User {
   isDeactivated?: boolean;
   ethnic?: string;
   religion?: string;
-  CCCD?: number;
+  CCCD?: string;
   notificationCount?: number;
   createdAt?: Date;
   updatedAt?: Date;
