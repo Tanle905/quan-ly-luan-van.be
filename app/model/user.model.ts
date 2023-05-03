@@ -23,7 +23,7 @@ export const userDataSchema: Schema = new mongoose.Schema<User>(
       type: String,
     },
     phoneNumber: {
-      type: Number,
+      type: String,
     },
     roles: [{ type: mongoose.Schema.Types.ObjectId, ref: "Role" }],
     isDeactivated: {

@@ -31,12 +31,13 @@ export function isCurEventDateMatchCurSelectedDate(
 }
 
 export function isCurDateSlotsListContainCurSlot(
-  todayBusyTime: ScheduleEventTime,
+  todayBusyTime: ScheduleEventTime[],
   slot: Slot
 ) {
-  return (
-    todayBusyTime?.busyTimeData?.slots?.includes(slot) ||
-    todayBusyTime?.thesisDefenseTimeData?.slots === slot
+  return todayBusyTime.find(
+    (e) =>
+      e?.busyTimeData?.slots?.includes(slot) ||
+      e?.thesisDefenseTimeData?.slots == slot
   );
 }
 

@@ -11,7 +11,7 @@ export interface User {
   firstName?: string;
   lastName?: string;
   imageUrl?: string;
-  phoneNumber?: number;
+  phoneNumber?: string;
   isDeactivated?: boolean;
   ethnic?: string;
   religion?: string;

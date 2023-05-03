@@ -57,7 +57,7 @@ export const studentManagementController = {
     try {
       const roleDocument = await RoleModel.findOne({ name: ROLES.STUDENT });
 
-      await StudentModel.findOneAndUpdate(
+      const error = await StudentModel.findOneAndUpdate(
         { MSSV: req.body.MSSV },
         {
           ...req.body,
@@ -68,6 +68,8 @@ export const studentManagementController = {
           upsert: true,
         }
       );
+
+      console.log(req.body)
 
       return res.status(200).json({ message: "Student added complete" });
     } catch (error) {

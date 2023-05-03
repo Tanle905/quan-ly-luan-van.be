@@ -280,7 +280,12 @@ export const thesisDefenseScheduleController = {
             })
         );
 
-        return res.status(200).json({ data: selectedDateEvents });
+        return res.status(200).json({
+          data: selectedDateEvents.sort(
+            (a, b) =>
+              a.thesisDefenseTimeData.slots - b.thesisDefenseTimeData.slots
+          ),
+        });
       } catch (error: any) {
         console.log(error);
         return res.status(500).json({ message: "Internal Error" });
@@ -441,15 +446,9 @@ export const thesisDefenseScheduleController = {
             .utcOffset(0)
             .startOf("day");
           await Promise.all(
-            studentLists.map(async (list) => {
-              //Check for student list owner's free slot
-              const currentTeacherBusyTimeList =
-                scheduleDocument.calendar.scheduleEventList.filter((event) =>
-                  isCurEventBelongToCurTeacher(event, list.MSCB)
-                );
-
+            studentLists.map(async function (list) {
               await Promise.all(
-                list.students.map(async (student, index) => {
+                list.students.map(async function (student, index) {
                   //Check if student is already have schedule
                   if (
                     isStudentHaveThesisSchedule(
@@ -466,24 +465,6 @@ export const thesisDefenseScheduleController = {
                     );
                     const currentSelectedDateFormated =
                       currentSelectedDate.format("DD-MM-YYYY");
-                    const isSelectedDateHaveBusyTime =
-                      currentTeacherBusyTimeList.find((event) =>
-                        isCurEventDateMatchCurSelectedDate(
-                          event,
-                          currentSelectedDateFormated
-                        )
-                      );
-                    const freeSlotsCurSelectedDate = isSelectedDateHaveBusyTime
-                      ? SLOTS.filter(
-                          (slot) =>
-                            !isCurDateSlotsListContainCurSlot(
-                              isSelectedDateHaveBusyTime,
-                              slot
-                            )
-                        )
-                      : SLOTS;
-                    //if student list's owner dont have free slot in selected day, return.
-                    if (freeSlotsCurSelectedDate.length === 0) return;
                     const topicDocument = await TopicModel.findById(
                       student.topic
                     );
@@ -523,13 +504,39 @@ export const thesisDefenseScheduleController = {
                       (teacher) =>
                         teacher.count !== 0 && teacher.MSCB !== list.MSCB
                     );
+                    //Check for student list owner's free slot
+                    const currentTeacherBusyTimeList =
+                      scheduleDocument.calendar.scheduleEventList.filter(
+                        (event) =>
+                          isCurEventBelongToCurTeacher(event, list.MSCB)
+                      );
+                    const isSelectedDateHaveBusyTime =
+                      currentTeacherBusyTimeList.filter((event) =>
+                        isCurEventDateMatchCurSelectedDate(
+                          event,
+                          currentSelectedDateFormated
+                        )
+                      );
+                    const freeSlotsOfCurSelectedDate =
+                      isSelectedDateHaveBusyTime
+                        ? SLOTS.filter(
+                            (slot) =>
+                              !isCurDateSlotsListContainCurSlot(
+                                isSelectedDateHaveBusyTime,
+                                slot
+                              )
+                          )
+                        : SLOTS;
+                    //if student list's owner dont have free slot in selected day, return.
+                    if (freeSlotsOfCurSelectedDate.length === 0) return;
+
                     //Loop to find if other teachers have free slots that match current slots
                     for (
                       let index = 0;
-                      index < freeSlotsCurSelectedDate.length;
+                      index < freeSlotsOfCurSelectedDate.length;
                       index++
                     ) {
-                      const slot = freeSlotsCurSelectedDate[index];
+                      const slot = freeSlotsOfCurSelectedDate[index];
                       const freeTeacherList: any[] =
                         matchMajorTeacherList.reduce(
                           (prevTeacher, curTeacher) =>
@@ -544,7 +551,7 @@ export const thesisDefenseScheduleController = {
                                   event,
                                   curTeacher.MSCB
                                 ) &&
-                                isCurDateSlotsListContainCurSlot(event, slot)
+                                isCurDateSlotsListContainCurSlot([event], slot)
                             )
                               ? prevTeacher
                               : [...prevTeacher, curTeacher.MSCB],
