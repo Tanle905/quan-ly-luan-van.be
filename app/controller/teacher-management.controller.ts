@@ -61,6 +61,12 @@ export const teacherManagementController = {
 
       return res.status(200).json({ message: "Teacher added complete" });
     } catch (error) {
+      if (error?.code === 11000)
+        return res.status(500).json({
+          message: `${Object.keys(
+            error?.keyPattern
+          )} bị trùng với giảng viên khác`,
+        });
       return res.status(500).json({ message: "Internal Error" });
     }
   },

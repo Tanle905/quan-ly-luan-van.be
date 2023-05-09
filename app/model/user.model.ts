@@ -5,6 +5,7 @@ export const userDataSchema: Schema = new mongoose.Schema<User>(
   {
     username: {
       type: String,
+      unique: true,
     },
     password: {
       type: String,
@@ -12,6 +13,7 @@ export const userDataSchema: Schema = new mongoose.Schema<User>(
     email: {
       type: String,
       required: true,
+      unique: true,
     },
     firstName: {
       type: String,

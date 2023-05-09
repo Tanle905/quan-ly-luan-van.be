@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { SortOrder } from "mongoose";
 import { TopicModel } from "../model/topic.model";
+import { TopicStatus } from "../constants and enums/variable";
 
 export const topicManagementController = {
   getTopics: async (req: Request, res: Response) => {
@@ -19,6 +20,7 @@ export const topicManagementController = {
               ],
             }
           : {}),
+        topicStatus: TopicStatus.Accepted,
       })
         .select("-password")
         .sort(

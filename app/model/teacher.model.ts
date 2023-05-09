@@ -7,6 +7,7 @@ export const teacherDataSchema: Schema = new mongoose.Schema<Teacher>(
     MSCB: {
       type: String,
       required: true,
+      unique: true,
     },
     majorTags: [
       {

@@ -9,6 +9,7 @@ export const studentDataSchema: Schema = new mongoose.Schema<Student>(
     MSSV: {
       type: String,
       required: true,
+      unique: true,
     },
     class: {
       type: String,
