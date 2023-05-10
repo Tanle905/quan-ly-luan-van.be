@@ -283,7 +283,7 @@ export const thesisDefenseScheduleController = {
         return res.status(200).json({
           data: selectedDateEvents.sort(
             (a, b) =>
-              a.thesisDefenseTimeData.slots - b.thesisDefenseTimeData.slots
+              a?.thesisDefenseTimeData?.slots - b?.thesisDefenseTimeData?.slots
           ),
         });
       } catch (error: any) {
