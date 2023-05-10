@@ -69,10 +69,16 @@ export const studentManagementController = {
         }
       );
 
-      console.log(req.body)
+      console.log(req.body);
 
       return res.status(200).json({ message: "Student added complete" });
     } catch (error) {
+      if (error?.code === 11000)
+        return res.status(500).json({
+          message: `${Object.keys(
+            error?.keyPattern
+          )} bị trùng với sinh viên khác`,
+        });
       return res.status(500).json({ message: "Internal Error" });
     }
   },
